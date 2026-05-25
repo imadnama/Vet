@@ -1,7 +1,7 @@
 using ClinicVets.App.Forms;
-using ClinicVets.App.Session;
 using ClinicVets.Core.Interfaces;
 using ClinicVets.Core.Models;
+using ClinicVets.Core.Session;
 using ClinicVets.Data;
 using ClinicVets.Data.Repositories;
 using ClinicVets.g1.Services;
