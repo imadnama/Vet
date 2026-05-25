@@ -160,7 +160,7 @@ public class MedicineInventoryForm : Form
             lblMessage.ForeColor = Color.DarkGreen;
             lblMessage.Text = "Medicine added successfully.";
             txtName.Clear();
-            nudPrice.Value = 0;
+            nudPrice.Value = nudPrice.Minimum;
             nudQuantity.Value = 0;
             LoadMedicines();
         }
