@@ -6,6 +6,7 @@ namespace ClinicVets.Core.Interfaces;
 public interface IVisitService
 {
     bool OpenVisit(Visit visit, out string error);
+    IEnumerable<Visit> GetAllVisits();
     IEnumerable<Visit> GetVisitsByAnimal(int animalId);
 
     /// <summary>base + sum of all medicine prices for this visit.</summary>

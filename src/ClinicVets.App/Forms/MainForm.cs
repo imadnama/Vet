@@ -138,18 +138,20 @@ public class MainForm : Form
         {
             Text      = "Visits and Treatments  (Veterinarian only)",
             Location  = new Point(20, 316),
-            Size      = new Size(770, 100),
+            Size      = new Size(770, 140),
             Font      = new Font("Segoe UI", 9, FontStyle.Bold),
             ForeColor = Color.FromArgb(123, 31, 162),
         };
 
-        var btnOpenVisit    = MakeNavButton("Open Visit",         Color.FromArgb(123, 31, 162), new Point(16,  30));
-        var btnMedicine     = MakeNavButton("Medicine Inventory", Color.FromArgb(123, 31, 162), new Point(186, 30));
-        var btnVisitHistory = MakeNavButton("Visit History",      Color.FromArgb(123, 31, 162), new Point(356, 30));
+        var btnOpenVisit    = MakeNavButton("Open Visit",          Color.FromArgb(123, 31, 162), new Point(16,  30));
+        var btnMedicine     = MakeNavButton("Medicine Inventory",  Color.FromArgb(123, 31, 162), new Point(186, 30));
+        var btnAnimalVisits = MakeNavButton("Animal Visits",       Color.FromArgb(123, 31, 162), new Point(16,  80));
+        var btnAllVisits    = MakeNavButton("All Clinic Visits",   Color.FromArgb(123, 31, 162), new Point(186, 80));
         btnOpenVisit.Click    += (_, _) => OpenVisit();
         btnMedicine.Click     += (_, _) => OpenMedicineInventory();
-        btnVisitHistory.Click += (_, _) => OpenVisitHistory();
-        _gbVisits.Controls.AddRange(new Control[] { btnOpenVisit, btnMedicine, btnVisitHistory });
+        btnAnimalVisits.Click += (_, _) => OpenVisitHistory();
+        btnAllVisits.Click    += (_, _) => OpenAllVisits();
+        _gbVisits.Controls.AddRange(new Control[] { btnOpenVisit, btnMedicine, btnAnimalVisits, btnAllVisits });
 
         // ── Status bar ───────────────────────────────────────────────────────
         var pnlStatus = new Panel { Dock = DockStyle.Bottom, Height = 28, BackColor = Color.FromArgb(224, 224, 224) };
@@ -237,4 +239,7 @@ private void OpenVisit()
 
     private void OpenVisitHistory()
         => new VisitHistoryForm(_visitService, _animalService).ShowDialog(this);
+
+    private void OpenAllVisits()
+        => new AllVisitsForm(_visitService, _animalService).ShowDialog(this);
 }

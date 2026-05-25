@@ -6,6 +6,7 @@ public interface IVisitRepository
 {
     void Add(Visit visit);
     Visit? GetById(int id);
+    IEnumerable<Visit> GetAll();
     IEnumerable<Visit> GetByAnimalId(int animalId);
     void Update(Visit visit);
 }

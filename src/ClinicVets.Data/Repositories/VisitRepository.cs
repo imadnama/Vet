@@ -45,6 +45,25 @@ public class VisitRepository : IVisitRepository
         tx.Commit();
     }
 
+    public IEnumerable<Visit> GetAll()
+    {
+        var visits = new List<Visit>();
+        using var conn = _db.CreateConnection();
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+            SELECT Id, AnimalId, Reason, VisitDateTime, Diagnosis, VetEmployeeId, TotalCost
+            FROM Visits
+            ORDER BY VisitDateTime DESC;";
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+            visits.Add(MapVisit(reader));
+        reader.Close();
+        foreach (var visit in visits)
+            visit.Medicines = LoadMedicines(conn, visit.Id);
+        return visits;
+    }
+
     public Visit? GetById(int id)
     {
         using var conn = _db.CreateConnection();

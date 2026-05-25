@@ -72,6 +72,8 @@ public class VisitService : IVisitService
         }
     }
 
+    public IEnumerable<Visit> GetAllVisits() => _visits.GetAll();
+
     public IEnumerable<Visit> GetVisitsByAnimal(int animalId) =>
         _visits.GetByAnimalId(animalId);
 
