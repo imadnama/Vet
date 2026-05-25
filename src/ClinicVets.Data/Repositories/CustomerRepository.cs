@@ -1,5 +1,6 @@
 using ClinicVets.Core.Interfaces;
 using ClinicVets.Core.Models;
+using Microsoft.Data.Sqlite;
 
 namespace ClinicVets.Data.Repositories;
 
@@ -9,9 +10,76 @@ public class CustomerRepository : ICustomerRepository
 
     public CustomerRepository(DatabaseContext db) => _db = db;
 
-    public Customer? GetByNationalId(string nationalId) => throw new NotImplementedException();
-    public Customer? GetByPhone(string phone) => throw new NotImplementedException();
-    public bool NationalIdExists(string nationalId) => throw new NotImplementedException();
-    public void Add(Customer customer) => throw new NotImplementedException();
-    public IEnumerable<Customer> GetAll() => throw new NotImplementedException();
+    public Customer? GetByNationalId(string nationalId)
+    {
+        using var conn = _db.CreateConnection();
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText =
+            "SELECT Id, FullName, NationalId, Phone, Email " +
+            "FROM Customers WHERE NationalId = @id";
+        cmd.Parameters.AddWithValue("@id", nationalId);
+        using var reader = cmd.ExecuteReader();
+        return reader.Read() ? MapCustomer(reader) : null;
+    }
+
+    public Customer? GetByPhone(string phone)
+    {
+        using var conn = _db.CreateConnection();
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText =
+            "SELECT Id, FullName, NationalId, Phone, Email " +
+            "FROM Customers WHERE Phone = @p";
+        cmd.Parameters.AddWithValue("@p", phone);
+        using var reader = cmd.ExecuteReader();
+        return reader.Read() ? MapCustomer(reader) : null;
+    }
+
+    public bool NationalIdExists(string nationalId)
+    {
+        using var conn = _db.CreateConnection();
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT COUNT(1) FROM Customers WHERE NationalId = @id";
+        cmd.Parameters.AddWithValue("@id", nationalId);
+        return Convert.ToInt64(cmd.ExecuteScalar()) > 0;
+    }
+
+    public void Add(Customer customer)
+    {
+        using var conn = _db.CreateConnection();
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+            INSERT INTO Customers (FullName, NationalId, Phone, Email)
+            VALUES (@fullName, @natId, @phone, @email)";
+        cmd.Parameters.AddWithValue("@fullName", customer.FullName);
+        cmd.Parameters.AddWithValue("@natId",    customer.NationalId);
+        cmd.Parameters.AddWithValue("@phone",    customer.Phone);
+        cmd.Parameters.AddWithValue("@email",    customer.Email);
+        cmd.ExecuteNonQuery();
+    }
+
+    public IEnumerable<Customer> GetAll()
+    {
+        var list = new List<Customer>();
+        using var conn = _db.CreateConnection();
+        conn.Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT Id, FullName, NationalId, Phone, Email FROM Customers";
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+            list.Add(MapCustomer(reader));
+        return list;
+    }
+
+    private static Customer MapCustomer(SqliteDataReader r) => new()
+    {
+        Id         = r.GetInt32(0),
+        FullName   = r.GetString(1),
+        NationalId = r.GetString(2),
+        Phone      = r.GetString(3),
+        Email      = r.GetString(4),
+    };
 }

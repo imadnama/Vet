@@ -1,6 +1,7 @@
 using ClinicVets.App.Forms;
 using ClinicVets.App.Session;
 using ClinicVets.Core.Interfaces;
+using ClinicVets.Core.Models;
 using ClinicVets.Data;
 using ClinicVets.Data.Repositories;
 using ClinicVets.g1.Services;
@@ -17,7 +18,7 @@ static class Program
     {
         ApplicationConfiguration.Initialize();
 
-        // ── Data layer ──────────────────────────────────────────────────────
+        // ── Data layer ───────────────────────────────────────────────────────
         var db = new DatabaseContext("clinicvets.db");
 
         IEmployeeRepository employeeRepo = new EmployeeRepository(db);
@@ -26,19 +27,22 @@ static class Program
         IVisitRepository    visitRepo    = new VisitRepository(db);
         IMedicineRepository medicineRepo = new MedicineRepository(db);
 
-        // ── Service layer ───────────────────────────────────────────────────
+        // ── Service layer ────────────────────────────────────────────────────
         IAuthService     authService     = new AuthService(employeeRepo);
         ICustomerService customerService = new CustomerService(customerRepo, animalRepo);
         IAnimalService   animalService   = new AnimalService(animalRepo, customerRepo);
         IVisitService    visitService    = new VisitService(visitRepo, animalRepo);
         IMedicineService medicineService = new MedicineService(medicineRepo);
 
-        // ── Navigation callback passed to LoginForm ─────────────────────────
-        // LoginForm calls this action on successful login, so g1 never needs
-        // a direct reference to MainForm (avoids a circular project dependency).
+        // ── Navigation callback ───────────────────────────────────────────────
+        // LoginForm passes the authenticated Employee here; we store it in the
+        // global session and then open the main window.
         LoginForm? loginForm = null;
-        void OnLoginSuccess()
+
+        void OnLoginSuccess(Employee emp)
         {
+            CurrentUserSession.SetUser(emp);   // store who is logged in
+
             var main = new MainForm(
                 authService,
                 customerService,
@@ -50,12 +54,16 @@ static class Program
             main.FormClosed += (_, _) =>
             {
                 CurrentUserSession.Clear();
-                loginForm?.Show(); // return to login screen on logout
+                loginForm?.Show();             // return to login after logout
             };
 
             loginForm?.Hide();
             main.Show();
         }
+
+        // Show animated splash screen before revealing the login form
+        using (var splash = new SplashForm())
+            splash.ShowDialog();
 
         loginForm = new LoginForm(authService, OnLoginSuccess);
         Application.Run(loginForm);
