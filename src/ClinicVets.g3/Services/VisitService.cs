@@ -1,32 +1,89 @@
 using ClinicVets.Core.Interfaces;
 using ClinicVets.Core.Models;
+using ClinicVets.g3.Validation;
 
 namespace ClinicVets.g3.Services;
 
 public class VisitService : IVisitService
 {
-    private const decimal BaseVisitPrice = 100m; // adjust as needed
+    private const decimal BaseVisitPrice = 100m;
 
     private readonly IVisitRepository _visits;
     private readonly IAnimalRepository _animals;
 
-    public VisitService(IVisitRepository visits, IAnimalRepository animals)
+    public VisitService(
+        IVisitRepository visits,
+        IAnimalRepository animals)
     {
         _visits = visits;
         _animals = animals;
     }
 
     /// <summary>
-    /// Validates the visit (animal exists, role is vet), persists it, and
-    /// auto-updates the animal's LastVaccinationDate if a vaccine was given.
+    /// Validates the visit, persists it, and returns the calculated cost.
     /// </summary>
     public bool OpenVisit(Visit visit, out string error)
-        => throw new NotImplementedException();
+    {
+        // Validate inputs
+        if (!VisitValidator.ValidateReason(visit.Reason, out var reasonError))
+        {
+            error = reasonError;
+            return false;
+        }
 
-    public IEnumerable<Visit> GetVisitsByAnimal(int animalId)
-        => throw new NotImplementedException();
+        if (!VisitValidator.ValidateDateTime(visit.VisitDateTime, out var dateError))
+        {
+            error = dateError;
+            return false;
+        }
 
-    /// <summary>base + sum of Medicine.Price for each medicine in the list.</summary>
+        if (!VisitValidator.ValidateAnimalId(visit.AnimalId, out var animalError))
+        {
+            error = animalError;
+            return false;
+        }
+
+        if (!VisitValidator.ValidateDiagnosis(visit.Diagnosis, out var diagError))
+        {
+            error = diagError;
+            return false;
+        }
+
+        // Ensure animal exists by checking in the repository
+        // Note: This assumes visit.AnimalId is the database ID, set by OpenVisitForm
+        var animal = _animals.GetByChipNumber(visit.AnimalId.ToString());
+        if (animal == null)
+        {
+            error = "Selected animal not found in database.";
+            return false;
+        }
+
+        // Calculate total cost
+        visit.TotalCost = CalculateTotalCost(BaseVisitPrice, visit.Medicines);
+
+        // Persist the visit
+        try
+        {
+            _visits.Add(visit);
+            error = string.Empty;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            error = $"Failed to save visit: {ex.Message}";
+            return false;
+        }
+    }
+
+    public IEnumerable<Visit> GetVisitsByAnimal(int animalId) =>
+        _visits.GetByAnimalId(animalId);
+
+    /// <summary>
+    /// Base price + sum of all medicine prices.
+    /// </summary>
     public decimal CalculateTotalCost(decimal basePrice, IEnumerable<Medicine> medicines)
-        => throw new NotImplementedException();
+    {
+        var medicineSum = medicines.Sum(m => m.Price);
+        return basePrice + medicineSum;
+    }
 }

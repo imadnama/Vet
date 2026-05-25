@@ -5,15 +5,51 @@ namespace ClinicVets.g3.Validation;
 /// </summary>
 public static class MedicineValidator
 {
-    // Rules: name must be non-empty.
     public static bool ValidateName(string name, out string error)
-        => throw new NotImplementedException();
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            error = "Medicine name cannot be empty.";
+            return false;
+        }
+        if (name.Length > 200)
+        {
+            error = "Medicine name must not exceed 200 characters.";
+            return false;
+        }
+        error = string.Empty;
+        return true;
+    }
 
-    // Rules: price must be > 0.
     public static bool ValidatePrice(decimal price, out string error)
-        => throw new NotImplementedException();
+    {
+        if (price <= 0)
+        {
+            error = "Price must be greater than 0.";
+            return false;
+        }
+        if (price > 100000)
+        {
+            error = "Price seems unreasonably high.";
+            return false;
+        }
+        error = string.Empty;
+        return true;
+    }
 
-    // Rules: quantity must be >= 0.
     public static bool ValidateQuantity(int quantity, out string error)
-        => throw new NotImplementedException();
+    {
+        if (quantity < 0)
+        {
+            error = "Quantity cannot be negative.";
+            return false;
+        }
+        if (quantity > 10000)
+        {
+            error = "Quantity seems unreasonably high.";
+            return false;
+        }
+        error = string.Empty;
+        return true;
+    }
 }

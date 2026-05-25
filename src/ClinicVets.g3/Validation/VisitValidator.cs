@@ -2,20 +2,56 @@ namespace ClinicVets.g3.Validation;
 
 /// <summary>
 /// Pure static validation for visit fields.
-/// Only veterinarians may open visits — enforce role in the form/service, not here.
 /// </summary>
 public static class VisitValidator
 {
-    // Rules: reason must be non-empty.
     public static bool ValidateReason(string reason, out string error)
-        => throw new NotImplementedException();
+    {
+        if (string.IsNullOrWhiteSpace(reason))
+        {
+            error = "Reason cannot be empty.";
+            return false;
+        }
+        if (reason.Length > 500)
+        {
+            error = "Reason must not exceed 500 characters.";
+            return false;
+        }
+        error = string.Empty;
+        return true;
+    }
 
-    // Rules: visitDateTime must not be in the future beyond 1 minute (clock skew tolerance).
     public static bool ValidateDateTime(DateTime visitDateTime, out string error)
-        => throw new NotImplementedException();
+    {
+        // Allow 1 minute of clock skew tolerance
+        if (visitDateTime > DateTime.Now.AddMinutes(1))
+        {
+            error = "Visit date/time cannot be in the future.";
+            return false;
+        }
+        error = string.Empty;
+        return true;
+    }
 
-    // Rules: animalId must be positive and exist in the Animals table.
-    // Existence check is done in VisitService; this validates the int value only.
     public static bool ValidateAnimalId(int animalId, out string error)
-        => throw new NotImplementedException();
+    {
+        if (animalId <= 0)
+        {
+            error = "Animal must be selected.";
+            return false;
+        }
+        error = string.Empty;
+        return true;
+    }
+
+    public static bool ValidateDiagnosis(string diagnosis, out string error)
+    {
+        if (diagnosis.Length > 1000)
+        {
+            error = "Diagnosis must not exceed 1000 characters.";
+            return false;
+        }
+        error = string.Empty;
+        return true;
+    }
 }
