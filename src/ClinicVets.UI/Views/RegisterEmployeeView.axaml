@@ -54,7 +54,7 @@
             <!-- Employee Number -->
             <StackPanel Spacing="4">
               <TextBlock Text="Employee Number" Classes="fieldLabel" />
-              <TextBox Text="{Binding EmployeeNumber}" PlaceholderText="e.g. EMP-001" Classes="field" />
+              <TextBox Text="{Binding EmployeeNumber}" PlaceholderText="e.g. 1234" Classes="field" />
               <TextBlock Text="{Binding ErrEmployeeNumber}" Classes="errLabel"
                          IsVisible="{Binding ErrEmployeeNumber, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
             </StackPanel>
