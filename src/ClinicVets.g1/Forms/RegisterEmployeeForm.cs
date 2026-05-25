@@ -5,25 +5,28 @@ using ClinicVets.g1.Validation;
 
 namespace ClinicVets.g1.Forms;
 
-/// <summary>
-/// Screen 2 — Register a new clinic employee.
-/// Fields: FullName, Username, Password, ConfirmPassword,
-///         EmployeeNumber, Email, NationalId, Role.
-/// </summary>
 public class RegisterEmployeeForm : Form
 {
     private readonly IAuthService _authService;
 
-    private TextBox      _txtFullName        = null!;
-    private TextBox      _txtUsername        = null!;
-    private TextBox      _txtPassword        = null!;
-    private TextBox      _txtConfirmPassword = null!;
-    private TextBox      _txtEmployeeNumber  = null!;
-    private TextBox      _txtEmail           = null!;
-    private TextBox      _txtNationalId      = null!;
-    private RadioButton  _rbVeterinarian     = null!;
-    private RadioButton  _rbSecretary        = null!;
-    private Label        _lblError           = null!;
+    private TextBox     _txtFullName        = null!;
+    private TextBox     _txtUsername        = null!;
+    private TextBox     _txtPassword        = null!;
+    private TextBox     _txtConfirmPassword = null!;
+    private TextBox     _txtEmployeeNumber  = null!;
+    private TextBox     _txtEmail           = null!;
+    private TextBox     _txtNationalId      = null!;
+    private RadioButton _rbVeterinarian     = null!;
+    private RadioButton _rbSecretary        = null!;
+
+    private Label _errFullName        = null!;
+    private Label _errUsername        = null!;
+    private Label _errPassword        = null!;
+    private Label _errConfirmPassword = null!;
+    private Label _errEmployeeNumber  = null!;
+    private Label _errEmail           = null!;
+    private Label _errNationalId      = null!;
+    private Label _lblGeneralError    = null!;
 
     public RegisterEmployeeForm(IAuthService authService)
     {
@@ -33,45 +36,61 @@ public class RegisterEmployeeForm : Form
 
     private void InitializeComponent()
     {
-        // ── Form properties ──────────────────────────────────────────────────
         Text            = "ClinicVets – Register Employee";
-        Size            = new Size(480, 680);
-        MinimumSize     = new Size(480, 680);
+        Size            = new Size(480, 800);
+        MinimumSize     = new Size(480, 800);
         StartPosition   = FormStartPosition.CenterParent;
         FormBorderStyle = FormBorderStyle.FixedSingle;
         MaximizeBox     = false;
         BackColor       = Color.White;
         Font            = new Font("Segoe UI", 9.5f);
 
-        // ── Header ───────────────────────────────────────────────────────────
         var pnlHeader = new Panel { Dock = DockStyle.Top, Height = 60, BackColor = Color.FromArgb(21, 101, 192) };
         var lblTitle  = new Label { Text = "Register New Employee", Font = new Font("Segoe UI", 15, FontStyle.Bold), ForeColor = Color.White, TextAlign = ContentAlignment.MiddleCenter, Dock = DockStyle.Fill };
         pnlHeader.Controls.Add(lblTitle);
 
-        // ── Field helper ─────────────────────────────────────────────────────
-        int x     = 30;
-        int w     = 414;
-        int lh    = 20;
-        int th    = 30;
-        int gap   = 55; // spacing between field groups
-        int y     = 72;
+        const int x   = 30;
+        const int w   = 414;
+        const int lh  = 18;
+        const int th  = 28;
+        const int gap = 72;
+        int y = 72;
 
-        (Label lbl, TextBox txt) MakeField(string labelText, bool isPassword = false)
+        (Label fieldLbl, TextBox txt, Label errLbl) MakeField(string labelText, bool isPassword = false)
         {
-            var lbl = new Label { Text = labelText, Font = new Font("Segoe UI", 9, FontStyle.Bold), Location = new Point(x, y), Size = new Size(w, lh) };
-            var txt = new TextBox { Location = new Point(x, y + lh + 2), Size = new Size(w, th), Font = new Font("Segoe UI", 10) };
-            if (isPassword) txt.PasswordChar = '*';
+            var fieldLabel = new Label
+            {
+                Text     = labelText,
+                Font     = new Font("Segoe UI", 9, FontStyle.Bold),
+                Location = new Point(x, y),
+                Size     = new Size(w, lh)
+            };
+            var textBox = new TextBox
+            {
+                Location     = new Point(x, y + lh + 2),
+                Size         = new Size(w, th),
+                Font         = new Font("Segoe UI", 10),
+                PasswordChar = isPassword ? '*' : '\0'
+            };
+            var errLabel = new Label
+            {
+                Location  = new Point(x, y + lh + 2 + th + 2),
+                Size      = new Size(w, 16),
+                ForeColor = Color.FromArgb(198, 40, 40),
+                Font      = new Font("Segoe UI", 8),
+                Text      = string.Empty
+            };
             y += gap;
-            return (lbl, txt);
+            return (fieldLabel, textBox, errLabel);
         }
 
-        var (lblFN,   txtFN)   = MakeField("Full Name");
-        var (lblUser, txtUser) = MakeField("Username  (6–8 chars, max 2 digits)");
-        var (lblPwd,  txtPwd)  = MakeField("Password  (8–10 chars, letter + digit + special: ! # $ ,)", true);
-        var (lblCpwd, txtCpwd) = MakeField("Confirm Password", true);
-        var (lblEmp,  txtEmp)  = MakeField("Employee Number  (4 digits)");
-        var (lblMail, txtMail) = MakeField("Email");
-        var (lblNat,  txtNat)  = MakeField("National ID  (9 digits)");
+        var (lblFN,   txtFN,   errFN)   = MakeField("Full Name");
+        var (lblUser, txtUser, errUser) = MakeField("Username  (6–8 chars, max 2 digits)");
+        var (lblPwd,  txtPwd,  errPwd)  = MakeField("Password  (8–10 chars, letter + digit + special: ! # $ ,)", true);
+        var (lblCpwd, txtCpwd, errCpwd) = MakeField("Confirm Password", true);
+        var (lblEmp,  txtEmp,  errEmp)  = MakeField("Employee Number  (4 digits)");
+        var (lblMail, txtMail, errMail) = MakeField("Email");
+        var (lblNat,  txtNat,  errNat)  = MakeField("National ID  (9 digits)");
 
         _txtFullName        = txtFN;
         _txtUsername        = txtUser;
@@ -81,13 +100,19 @@ public class RegisterEmployeeForm : Form
         _txtEmail           = txtMail;
         _txtNationalId      = txtNat;
 
-        // ── Role radios ──────────────────────────────────────────────────────
-        var lblRole = new Label { Text = "Role", Font = new Font("Segoe UI", 9, FontStyle.Bold), Location = new Point(x, y), Size = new Size(w, lh) };
+        _errFullName        = errFN;
+        _errUsername        = errUser;
+        _errPassword        = errPwd;
+        _errConfirmPassword = errCpwd;
+        _errEmployeeNumber  = errEmp;
+        _errEmail           = errMail;
+        _errNationalId      = errNat;
+
+        var lblRole     = new Label       { Text = "Role", Font = new Font("Segoe UI", 9, FontStyle.Bold), Location = new Point(x, y), Size = new Size(w, lh) };
         _rbVeterinarian = new RadioButton { Text = "Veterinarian", Location = new Point(x, y + lh + 4), Font = new Font("Segoe UI", 10), Checked = true };
         _rbSecretary    = new RadioButton { Text = "Secretary",    Location = new Point(x + 130, y + lh + 4), Font = new Font("Segoe UI", 10) };
-        y += gap;
+        y += 55;
 
-        // ── Register button ──────────────────────────────────────────────────
         var btnRegister = new Button
         {
             Text      = "REGISTER EMPLOYEE",
@@ -103,55 +128,80 @@ public class RegisterEmployeeForm : Form
         btnRegister.Click += btnRegister_Click;
         y += 50;
 
-        // ── Error label ──────────────────────────────────────────────────────
-        _lblError = new Label
+        _lblGeneralError = new Label
         {
             Location  = new Point(x, y),
-            Size      = new Size(w, 36),
+            Size      = new Size(w, 20),
             ForeColor = Color.FromArgb(198, 40, 40),
             Font      = new Font("Segoe UI", 9),
             TextAlign = ContentAlignment.MiddleCenter,
         };
 
-        // ── Add all controls ─────────────────────────────────────────────────
         Controls.Add(pnlHeader);
         foreach (var ctrl in new Control[]
         {
-            lblFN, txtFN, lblUser, txtUser, lblPwd, txtPwd, lblCpwd, txtCpwd,
-            lblEmp, txtEmp, lblMail, txtMail, lblNat, txtNat,
+            lblFN,   txtFN,   errFN,
+            lblUser, txtUser, errUser,
+            lblPwd,  txtPwd,  errPwd,
+            lblCpwd, txtCpwd, errCpwd,
+            lblEmp,  txtEmp,  errEmp,
+            lblMail, txtMail, errMail,
+            lblNat,  txtNat,  errNat,
             lblRole, _rbVeterinarian, _rbSecretary,
-            btnRegister, _lblError,
+            btnRegister, _lblGeneralError,
         })
-        {
             Controls.Add(ctrl);
-        }
 
         AcceptButton = btnRegister;
     }
 
     private void btnRegister_Click(object? sender, EventArgs e)
     {
-        _lblError.Text = string.Empty;
+        ClearAllErrors();
+        bool valid = true;
 
-        // Full name (not covered by EmployeeValidator — check manually)
-        if (string.IsNullOrWhiteSpace(_txtFullName.Text.Trim()))
+        if (string.IsNullOrWhiteSpace(_txtFullName.Text))
         {
-            _lblError.Text = "Full name is required.";
-            return;
+            _errFullName.Text = "Full name is required.";
+            valid = false;
         }
 
-        if (!EmployeeValidator.ValidateUsername(_txtUsername.Text.Trim(), out var err))  { _lblError.Text = err; return; }
-        if (!EmployeeValidator.ValidatePassword(_txtPassword.Text, out err))             { _lblError.Text = err; return; }
-
-        if (_txtPassword.Text != _txtConfirmPassword.Text)
+        if (!EmployeeValidator.ValidateUsername(_txtUsername.Text.Trim(), out var errUser))
         {
-            _lblError.Text = "Passwords do not match.";
-            return;
+            _errUsername.Text = errUser;
+            valid = false;
         }
 
-        if (!EmployeeValidator.ValidateEmployeeNumber(_txtEmployeeNumber.Text.Trim(), out err)) { _lblError.Text = err; return; }
-        if (!EmployeeValidator.ValidateEmail(_txtEmail.Text.Trim(), out err))                   { _lblError.Text = err; return; }
-        if (!EmployeeValidator.ValidateNationalId(_txtNationalId.Text.Trim(), out err))         { _lblError.Text = err; return; }
+        if (!EmployeeValidator.ValidatePassword(_txtPassword.Text, out var errPwd))
+        {
+            _errPassword.Text = errPwd;
+            valid = false;
+        }
+        else if (_txtPassword.Text != _txtConfirmPassword.Text)
+        {
+            _errConfirmPassword.Text = "Passwords do not match.";
+            valid = false;
+        }
+
+        if (!EmployeeValidator.ValidateEmployeeNumber(_txtEmployeeNumber.Text.Trim(), out var errEmp))
+        {
+            _errEmployeeNumber.Text = errEmp;
+            valid = false;
+        }
+
+        if (!EmployeeValidator.ValidateEmail(_txtEmail.Text.Trim(), out var errMail))
+        {
+            _errEmail.Text = errMail;
+            valid = false;
+        }
+
+        if (!EmployeeValidator.ValidateNationalId(_txtNationalId.Text.Trim(), out var errNat))
+        {
+            _errNationalId.Text = errNat;
+            valid = false;
+        }
+
+        if (!valid) return;
 
         var employee = new Employee
         {
@@ -174,7 +224,19 @@ public class RegisterEmployeeForm : Form
         }
         else
         {
-            _lblError.Text = "Registration failed. Username or Employee Number already exists.";
+            _lblGeneralError.Text = "Username or Employee Number already exists.";
         }
+    }
+
+    private void ClearAllErrors()
+    {
+        _errFullName.Text        = string.Empty;
+        _errUsername.Text        = string.Empty;
+        _errPassword.Text        = string.Empty;
+        _errConfirmPassword.Text = string.Empty;
+        _errEmployeeNumber.Text  = string.Empty;
+        _errEmail.Text           = string.Empty;
+        _errNationalId.Text      = string.Empty;
+        _lblGeneralError.Text    = string.Empty;
     }
 }
