@@ -184,8 +184,7 @@ public class OpenVisitForm : Form
     {
         try
         {
-            // Load all animals via SearchByName("") to get all; adjust if g2 implements GetAll
-            _allAnimals = _animalService.SearchByName("").ToList();
+            _allAnimals = _animalService.GetAll().ToList();
             if (_allAnimals.Count == 0)
             {
                 lblErrorMessage.Text = "No animals found. Please register animals first.";

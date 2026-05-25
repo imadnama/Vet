@@ -60,6 +60,8 @@ public class AnimalService : IAnimalService
         return true;
     }
 
+    public IEnumerable<Animal> GetAll() => _animals.GetAll();
+
     public IEnumerable<Animal> SearchByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))

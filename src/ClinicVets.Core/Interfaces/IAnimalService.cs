@@ -6,6 +6,7 @@ namespace ClinicVets.Core.Interfaces;
 public interface IAnimalService
 {
     bool AddAnimal(Animal animal, out string error);
+    IEnumerable<Animal> GetAll();
     IEnumerable<Animal> SearchByName(string name);
     Animal? SearchByChipNumber(string chipNumber);
 
