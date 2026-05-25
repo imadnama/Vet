@@ -63,15 +63,20 @@ public class CustomerRepository : ICustomerRepository
 
     public IEnumerable<Customer> GetAll()
     {
-        var list = new List<Customer>();
+        var customers = new List<Customer>();
         using var conn = _db.CreateConnection();
         conn.Open();
         using var cmd = conn.CreateCommand();
-        cmd.CommandText = "SELECT Id, FullName, NationalId, Phone, Email FROM Customers";
+        cmd.CommandText = @"
+            SELECT Id, FullName, NationalId, Phone, Email
+            FROM Customers
+            ORDER BY FullName, NationalId;";
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
-            list.Add(MapCustomer(reader));
-        return list;
+        {
+            customers.Add(MapCustomer(reader));
+        }
+        return customers;
     }
 
     private static Customer MapCustomer(SqliteDataReader r) => new()

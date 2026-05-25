@@ -16,39 +16,60 @@ public class AnimalRepository : IAnimalRepository
         using var conn = _db.CreateConnection();
         conn.Open();
         using var cmd = conn.CreateCommand();
-        cmd.CommandText = SelectAll() + " WHERE ChipNumber = @chip";
-        cmd.Parameters.AddWithValue("@chip", chipNumber);
+        cmd.CommandText = @"
+            SELECT Id, ChipNumber, Name, Type, Weight, BirthDate, OwnerId, LastVaccinationDate
+            FROM Animals
+            WHERE ChipNumber = $chipNumber;";
+        cmd.Parameters.AddWithValue("$chipNumber", chipNumber);
+
         using var reader = cmd.ExecuteReader();
         return reader.Read() ? MapAnimal(reader) : null;
     }
 
     public IEnumerable<Animal> SearchByName(string name)
     {
-        var list = new List<Animal>();
+        var animals = new List<Animal>();
+
         using var conn = _db.CreateConnection();
         conn.Open();
         using var cmd = conn.CreateCommand();
-        cmd.CommandText = SelectAll() + " WHERE Name LIKE @name";
-        cmd.Parameters.AddWithValue("@name", $"%{name}%");
+        cmd.CommandText = @"
+            SELECT Id, ChipNumber, Name, Type, Weight, BirthDate, OwnerId, LastVaccinationDate
+            FROM Animals
+            WHERE Name LIKE $name
+            ORDER BY Name, ChipNumber;";
+        cmd.Parameters.AddWithValue("$name", $"%{name}%");
+
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
-            list.Add(MapAnimal(reader));
-        return list;
+        {
+            animals.Add(MapAnimal(reader));
+        }
+
+        return animals;
     }
 
-    // Used by CustomerService.GetCustomerAnimals to list all animals for a customer.
     public IEnumerable<Animal> GetByOwnerId(int ownerId)
     {
-        var list = new List<Animal>();
+        var animals = new List<Animal>();
+
         using var conn = _db.CreateConnection();
         conn.Open();
         using var cmd = conn.CreateCommand();
-        cmd.CommandText = SelectAll() + " WHERE OwnerId = @ownerId";
-        cmd.Parameters.AddWithValue("@ownerId", ownerId);
+        cmd.CommandText = @"
+            SELECT Id, ChipNumber, Name, Type, Weight, BirthDate, OwnerId, LastVaccinationDate
+            FROM Animals
+            WHERE OwnerId = $ownerId
+            ORDER BY Name, ChipNumber;";
+        cmd.Parameters.AddWithValue("$ownerId", ownerId);
+
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
-            list.Add(MapAnimal(reader));
-        return list;
+        {
+            animals.Add(MapAnimal(reader));
+        }
+
+        return animals;
     }
 
     public void Add(Animal animal)
@@ -58,17 +79,11 @@ public class AnimalRepository : IAnimalRepository
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
             INSERT INTO Animals (ChipNumber, Name, Type, Weight, BirthDate, OwnerId, LastVaccinationDate)
-            VALUES (@chip, @name, @type, @weight, @birth, @owner, @vaccine)";
-        cmd.Parameters.AddWithValue("@chip",    animal.ChipNumber);
-        cmd.Parameters.AddWithValue("@name",    animal.Name);
-        cmd.Parameters.AddWithValue("@type",    (int)animal.Type);
-        cmd.Parameters.AddWithValue("@weight",  (double)animal.Weight);
-        cmd.Parameters.AddWithValue("@birth",   animal.BirthDate.ToString("yyyy-MM-dd"));
-        cmd.Parameters.AddWithValue("@owner",   animal.OwnerId);
-        cmd.Parameters.AddWithValue("@vaccine", animal.LastVaccinationDate.HasValue
-            ? (object)animal.LastVaccinationDate.Value.ToString("yyyy-MM-dd")
-            : DBNull.Value);
-        cmd.ExecuteNonQuery();
+            VALUES ($chipNumber, $name, $type, $weight, $birthDate, $ownerId, $lastVaccinationDate);
+            SELECT last_insert_rowid();";
+        AddAnimalParameters(cmd, animal);
+
+        animal.Id = Convert.ToInt32((long)cmd.ExecuteScalar()!);
     }
 
     public void Update(Animal animal)
@@ -78,47 +93,65 @@ public class AnimalRepository : IAnimalRepository
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
             UPDATE Animals
-               SET ChipNumber=@chip, Name=@name, Type=@type, Weight=@weight,
-                   BirthDate=@birth, OwnerId=@owner, LastVaccinationDate=@vaccine
-             WHERE Id=@id";
-        cmd.Parameters.AddWithValue("@chip",    animal.ChipNumber);
-        cmd.Parameters.AddWithValue("@name",    animal.Name);
-        cmd.Parameters.AddWithValue("@type",    (int)animal.Type);
-        cmd.Parameters.AddWithValue("@weight",  (double)animal.Weight);
-        cmd.Parameters.AddWithValue("@birth",   animal.BirthDate.ToString("yyyy-MM-dd"));
-        cmd.Parameters.AddWithValue("@owner",   animal.OwnerId);
-        cmd.Parameters.AddWithValue("@vaccine", animal.LastVaccinationDate.HasValue
-            ? (object)animal.LastVaccinationDate.Value.ToString("yyyy-MM-dd")
-            : DBNull.Value);
-        cmd.Parameters.AddWithValue("@id", animal.Id);
+            SET ChipNumber = $chipNumber,
+                Name = $name,
+                Type = $type,
+                Weight = $weight,
+                BirthDate = $birthDate,
+                OwnerId = $ownerId,
+                LastVaccinationDate = $lastVaccinationDate
+            WHERE Id = $id;";
+        AddAnimalParameters(cmd, animal);
+        cmd.Parameters.AddWithValue("$id", animal.Id);
         cmd.ExecuteNonQuery();
     }
 
     public IEnumerable<Animal> GetAll()
     {
-        var list = new List<Animal>();
+        var animals = new List<Animal>();
+
         using var conn = _db.CreateConnection();
         conn.Open();
         using var cmd = conn.CreateCommand();
-        cmd.CommandText = SelectAll();
+        cmd.CommandText = @"
+            SELECT Id, ChipNumber, Name, Type, Weight, BirthDate, OwnerId, LastVaccinationDate
+            FROM Animals
+            ORDER BY Name, ChipNumber;";
+
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
-            list.Add(MapAnimal(reader));
-        return list;
+        {
+            animals.Add(MapAnimal(reader));
+        }
+
+        return animals;
     }
 
-    private static string SelectAll() =>
-        "SELECT Id, ChipNumber, Name, Type, Weight, BirthDate, OwnerId, LastVaccinationDate FROM Animals";
-
-    private static Animal MapAnimal(SqliteDataReader r) => new()
+    private static void AddAnimalParameters(SqliteCommand cmd, Animal animal)
     {
-        Id                  = r.GetInt32(0),
-        ChipNumber          = r.GetString(1),
-        Name                = r.GetString(2),
-        Type                = (AnimalType)r.GetInt32(3),
-        Weight              = (decimal)r.GetDouble(4),
-        BirthDate           = DateTime.Parse(r.GetString(5)),
-        OwnerId             = r.GetInt32(6),
-        LastVaccinationDate = r.IsDBNull(7) ? null : DateTime.Parse(r.GetString(7)),
-    };
+        cmd.Parameters.AddWithValue("$chipNumber", animal.ChipNumber);
+        cmd.Parameters.AddWithValue("$name", animal.Name);
+        cmd.Parameters.AddWithValue("$type", (int)animal.Type);
+        cmd.Parameters.AddWithValue("$weight", animal.Weight);
+        cmd.Parameters.AddWithValue("$birthDate", animal.BirthDate.ToString("O"));
+        cmd.Parameters.AddWithValue("$ownerId", animal.OwnerId);
+        cmd.Parameters.AddWithValue(
+            "$lastVaccinationDate",
+            animal.LastVaccinationDate.HasValue
+                ? animal.LastVaccinationDate.Value.ToString("O")
+                : DBNull.Value);
+    }
+
+    private static Animal MapAnimal(SqliteDataReader reader)
+        => new()
+        {
+            Id = reader.GetInt32(0),
+            ChipNumber = reader.GetString(1),
+            Name = reader.GetString(2),
+            Type = (AnimalType)reader.GetInt32(3),
+            Weight = reader.GetDecimal(4),
+            BirthDate = DateTime.Parse(reader.GetString(5)),
+            OwnerId = reader.GetInt32(6),
+            LastVaccinationDate = reader.IsDBNull(7) ? null : DateTime.Parse(reader.GetString(7))
+        };
 }
