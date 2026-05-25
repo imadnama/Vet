@@ -1,0 +1,195 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ClinicVets.UI.ViewModels"
+             xmlns:m="using:ClinicVets.Core.Models"
+             x:Class="ClinicVets.UI.Views.OpenVisitView"
+             x:DataType="vm:OpenVisitViewModel">
+
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="36,32,36,32" Spacing="20">
+
+      <StackPanel Spacing="4">
+        <TextBlock Text="Open Visit" Classes="pageTitle" />
+        <TextBlock Text="Record a new clinical visit for a patient." Classes="pageSubtitle" />
+      </StackPanel>
+
+      <!-- Main form card -->
+      <Border Classes="card">
+        <StackPanel Spacing="14">
+
+          <!-- Animal -->
+          <StackPanel Spacing="4">
+            <TextBlock Text="Animal" Classes="fieldLabel" />
+            <ComboBox ItemsSource="{Binding Animals}"
+                      SelectedItem="{Binding SelectedAnimal}"
+                      HorizontalAlignment="Stretch"
+                      Background="#0D1117"
+                      BorderBrush="{StaticResource BorderBrush}"
+                      Foreground="{StaticResource TextPrimaryBrush}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="m:Animal">
+                  <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Border Background="#291F00" CornerRadius="4" Padding="10,6"
+                    IsVisible="{Binding VaccineWarning, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+              <TextBlock Text="{Binding VaccineWarning}"
+                         Foreground="{StaticResource WarningBrush}"
+                         FontSize="12" FontWeight="SemiBold" />
+            </Border>
+          </StackPanel>
+
+          <!-- Visit Date + Vet -->
+          <Grid ColumnDefinitions="*,12,*">
+            <StackPanel Grid.Column="0" Spacing="4">
+              <TextBlock Text="Visit Date" Classes="fieldLabel" />
+              <DatePicker SelectedDate="{Binding VisitDate}"
+                          HorizontalAlignment="Stretch"
+                          Background="#0D1117"
+                          BorderBrush="{StaticResource BorderBrush}"
+                          Foreground="{StaticResource TextPrimaryBrush}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="4">
+              <TextBlock Text="Veterinarian" Classes="fieldLabel" />
+              <TextBox Text="{Binding VetName}" IsReadOnly="True"
+                       Background="#0D1117" BorderBrush="{StaticResource BorderBrush}"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       BorderThickness="1" CornerRadius="6" Padding="10,8" FontSize="13" />
+            </StackPanel>
+          </Grid>
+
+          <!-- Reason -->
+          <StackPanel Spacing="4">
+            <TextBlock Text="Reason for Visit" Classes="fieldLabel" />
+            <TextBox Text="{Binding Reason}" PlaceholderText="Describe the reason..." Classes="field" />
+          </StackPanel>
+
+          <!-- Diagnosis -->
+          <StackPanel Spacing="4">
+            <TextBlock Text="Diagnosis (optional)" Classes="fieldLabel" />
+            <TextBox Text="{Binding Diagnosis}" PlaceholderText="Diagnosis notes..."
+                     Classes="field" Height="70" AcceptsReturn="True"
+                     TextWrapping="Wrap" />
+          </StackPanel>
+
+        </StackPanel>
+      </Border>
+
+      <!-- Medicines card -->
+      <Border Classes="card">
+        <StackPanel Spacing="12">
+          <TextBlock Text="Medicines" FontSize="15" FontWeight="SemiBold"
+                     Foreground="{StaticResource TextPrimaryBrush}" />
+          <TextBlock Text="Select medicines to include in this visit:"
+                     FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" />
+
+          <ItemsControl Name="MedicineItemsControl" ItemsSource="{Binding Medicines}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="m:Medicine">
+                <Border Padding="0,3">
+                  <CheckBox Name="MedCheckBox"
+                            Tag="{Binding}"
+                            Foreground="{StaticResource TextPrimaryBrush}">
+                    <TextBlock>
+                      <Run Text="{Binding Name}" />
+                      <Run Text=" — " Foreground="{StaticResource TextSecondaryBrush}" />
+                      <Run Text="{Binding Price, StringFormat='₪{0:F2}'}" Foreground="{StaticResource TextSecondaryBrush}" />
+                    </TextBlock>
+                  </CheckBox>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+
+          <Border Height="1" Background="{StaticResource BorderBrush}" />
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <TextBlock Text="Total Cost:"
+                       FontSize="14" FontWeight="SemiBold"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       VerticalAlignment="Center" />
+            <TextBlock Text="{Binding TotalCost, StringFormat='₪{0:F2}'}"
+                       FontSize="18" FontWeight="Bold"
+                       Foreground="{StaticResource AccentBrush}" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- Feedback + actions -->
+      <TextBlock Text="{Binding ErrorMsg}" Classes="errLabel"
+                 IsVisible="{Binding ErrorMsg, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+      <TextBlock Text="{Binding SuccessMsg}"
+                 Foreground="{StaticResource SuccessBrush}" FontSize="13"
+                 IsVisible="{Binding SuccessMsg, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+      <Grid ColumnDefinitions="*,12,*">
+        <Button Grid.Column="0" Command="{Binding BackCommand}" Classes="secondary">← Back</Button>
+        <Button Grid.Column="2" Command="{Binding SaveCommand}" Classes="primary">Save Visit</Button>
+      </Grid>
+
+    </StackPanel>
+  </ScrollViewer>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.pageTitle">
+      <Setter Property="FontSize" Value="22" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.pageSubtitle">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="24,20" />
+    </Style>
+    <Style Selector="TextBlock.fieldLabel">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.errLabel">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+    </Style>
+    <Style Selector="TextBox.field">
+      <Setter Property="Background" Value="#0D1117" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Padding" Value="0,9" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+    </Style>
+    <Style Selector="Button.secondary">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Padding" Value="0,9" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>

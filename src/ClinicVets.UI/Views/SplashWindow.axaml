@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ClinicVets.UI.Views.SplashWindow"
+        Title="ClinicVets"
+        Width="460" Height="300"
+        WindowDecorations="None"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        ShowInTaskbar="False"
+        Opacity="0"
+        Background="#0F1117">
+
+  <Grid RowDefinitions="*,Auto">
+
+    <!-- Center logo -->
+    <StackPanel Grid.Row="0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Spacing="10">
+
+      <TextBlock Text="🐾"
+                 FontSize="58"
+                 HorizontalAlignment="Center" />
+
+      <TextBlock Text="ClinicVets"
+                 FontSize="36"
+                 FontWeight="Bold"
+                 HorizontalAlignment="Center"
+                 Foreground="#6366F1" />
+
+      <TextBlock Text="Veterinary Management System"
+                 FontSize="13"
+                 HorizontalAlignment="Center"
+                 Foreground="#8B949E" />
+
+    </StackPanel>
+
+    <!-- Bottom loader -->
+    <StackPanel Grid.Row="1" Margin="48,0,48,28" Spacing="10">
+
+      <ProgressBar IsIndeterminate="True"
+                   Height="3"
+                   Foreground="#6366F1"
+                   Background="#30363D"
+                   CornerRadius="2"
+                   BorderThickness="0" />
+
+      <TextBlock Text="Loading..."
+                 FontSize="11"
+                 HorizontalAlignment="Center"
+                 Foreground="#8B949E" />
+
+    </StackPanel>
+
+  </Grid>
+
+</Window>

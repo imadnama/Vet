@@ -1,0 +1,153 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ClinicVets.UI.ViewModels"
+             x:Class="ClinicVets.UI.Views.CustomerSearchView"
+             x:DataType="vm:CustomerSearchViewModel">
+
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="36,32,36,32" Spacing="20">
+
+      <StackPanel Spacing="4">
+        <TextBlock Text="Search Customer" Classes="pageTitle" />
+        <TextBlock Text="Look up a customer by National ID or phone number." Classes="pageSubtitle" />
+      </StackPanel>
+
+      <!-- Search bar card -->
+      <Border Classes="card">
+        <StackPanel Spacing="12">
+          <StackPanel Orientation="Horizontal" Spacing="16">
+            <RadioButton Content="By National ID"
+                         IsChecked="{Binding SearchByPhone, Converter={x:Static BoolConverters.Not}}"
+                         Foreground="{StaticResource TextPrimaryBrush}" />
+            <RadioButton Content="By Phone"
+                         IsChecked="{Binding SearchByPhone}"
+                         Foreground="{StaticResource TextPrimaryBrush}" />
+          </StackPanel>
+          <Grid ColumnDefinitions="*,10,Auto">
+            <TextBox Grid.Column="0"
+                     Text="{Binding SearchQuery}"
+                     PlaceholderText="Enter National ID or phone..."
+                     Classes="field" />
+            <Button Grid.Column="2"
+                    Command="{Binding SearchCommand}"
+                    Classes="primary"
+                    Padding="18,8">Search</Button>
+          </Grid>
+          <TextBlock Text="{Binding ErrorMessage}" Classes="errLabel"
+                     IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        </StackPanel>
+      </Border>
+
+      <!-- Result -->
+      <Border Classes="card"
+              IsVisible="{Binding FoundCustomer, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <StackPanel Spacing="16">
+
+          <!-- Customer info -->
+          <Grid ColumnDefinitions="*,*,*,*" Margin="0,0,0,8">
+            <StackPanel Grid.Column="0" Spacing="2">
+              <TextBlock Text="NAME" Classes="metaLabel" />
+              <TextBlock Text="{Binding FoundCustomer.FullName}" Classes="metaValue" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Spacing="2">
+              <TextBlock Text="NATIONAL ID" Classes="metaLabel" />
+              <TextBlock Text="{Binding FoundCustomer.NationalId}" Classes="metaValue" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="2">
+              <TextBlock Text="PHONE" Classes="metaLabel" />
+              <TextBlock Text="{Binding FoundCustomer.Phone}" Classes="metaValue" />
+            </StackPanel>
+            <StackPanel Grid.Column="3" Spacing="2">
+              <TextBlock Text="EMAIL" Classes="metaLabel" />
+              <TextBlock Text="{Binding FoundCustomer.Email}" Classes="metaValue" TextWrapping="Wrap" />
+            </StackPanel>
+          </Grid>
+
+          <Border Height="1" Background="{StaticResource BorderBrush}" />
+
+          <!-- Animals -->
+          <StackPanel Spacing="8">
+            <TextBlock Text="Animals" FontSize="13" FontWeight="SemiBold"
+                       Foreground="{StaticResource TextSecondaryBrush}" />
+            <TextBlock Text="No animals registered."
+                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                       IsVisible="{Binding CustomerAnimals.Count, Converter={x:Static ObjectConverters.IsNull}}" />
+            <ItemsControl ItemsSource="{Binding CustomerAnimals}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Background="#0D1117"
+                          BorderBrush="{StaticResource BorderBrush}"
+                          BorderThickness="1" CornerRadius="6"
+                          Padding="12,8" Margin="0,0,0,4">
+                    <StackPanel Orientation="Horizontal" Spacing="20">
+                      <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                 Foreground="{StaticResource TextPrimaryBrush}" />
+                      <TextBlock Text="{Binding Type}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" />
+                      <TextBlock Text="{Binding ChipNumber}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" />
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+
+        </StackPanel>
+      </Border>
+
+    </StackPanel>
+  </ScrollViewer>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.pageTitle">
+      <Setter Property="FontSize" Value="22" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.pageSubtitle">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="24,20" />
+    </Style>
+    <Style Selector="TextBlock.metaLabel">
+      <Setter Property="FontSize" Value="10" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="LetterSpacing" Value="1" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.metaValue">
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.errLabel">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+    </Style>
+    <Style Selector="TextBox.field">
+      <Setter Property="Background" Value="#0D1117" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>

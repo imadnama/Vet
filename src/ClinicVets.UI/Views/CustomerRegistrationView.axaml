@@ -1,0 +1,127 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ClinicVets.UI.ViewModels"
+             x:Class="ClinicVets.UI.Views.CustomerRegistrationView"
+             x:DataType="vm:CustomerRegistrationViewModel">
+
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <Grid HorizontalAlignment="Center" Width="480" Margin="0,32,0,32">
+      <StackPanel Spacing="0">
+
+        <StackPanel Margin="0,0,0,24" Spacing="4">
+          <TextBlock Text="Register Customer" Classes="pageTitle" />
+          <TextBlock Text="Add a new pet owner to the system." Classes="pageSubtitle" />
+        </StackPanel>
+
+        <Border Classes="card">
+          <StackPanel Spacing="14">
+
+            <StackPanel Spacing="4">
+              <TextBlock Text="Full Name" Classes="fieldLabel" />
+              <TextBox Text="{Binding FullName}" PlaceholderText="Owner's full name" Classes="field" />
+              <TextBlock Text="{Binding ErrFullName}" Classes="errLabel"
+                         IsVisible="{Binding ErrFullName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+              <TextBlock Text="National ID" Classes="fieldLabel" />
+              <TextBox Text="{Binding NationalId}" PlaceholderText="9-digit ID number" Classes="field" />
+              <TextBlock Text="{Binding ErrNationalId}" Classes="errLabel"
+                         IsVisible="{Binding ErrNationalId, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+              <TextBlock Text="Phone" Classes="fieldLabel" />
+              <TextBox Text="{Binding Phone}" PlaceholderText="e.g. 050-1234567" Classes="field" />
+              <TextBlock Text="{Binding ErrPhone}" Classes="errLabel"
+                         IsVisible="{Binding ErrPhone, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+              <TextBlock Text="Email" Classes="fieldLabel" />
+              <TextBox Text="{Binding Email}" PlaceholderText="email@example.com" Classes="field" />
+              <TextBlock Text="{Binding ErrEmail}" Classes="errLabel"
+                         IsVisible="{Binding ErrEmail, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <TextBlock Text="{Binding GeneralError}" Classes="errLabel"
+                       IsVisible="{Binding GeneralError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            <TextBlock Text="{Binding SuccessMsg}"
+                       Foreground="{StaticResource SuccessBrush}" FontSize="12"
+                       IsVisible="{Binding SuccessMsg, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            <Grid ColumnDefinitions="*,12,*" Margin="0,4,0,0">
+              <Button Grid.Column="0" Command="{Binding BackCommand}" Classes="secondary">← Back</Button>
+              <Button Grid.Column="2" Command="{Binding RegisterCommand}" Classes="primary">Register</Button>
+            </Grid>
+
+          </StackPanel>
+        </Border>
+
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.pageTitle">
+      <Setter Property="FontSize" Value="22" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.pageSubtitle">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="28,24" />
+    </Style>
+    <Style Selector="TextBlock.fieldLabel">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.errLabel">
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+    </Style>
+    <Style Selector="TextBox.field">
+      <Setter Property="Background" Value="#0D1117" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Padding" Value="0,9" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+    </Style>
+    <Style Selector="Button.secondary">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Padding" Value="0,9" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>

@@ -1,0 +1,103 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using ClinicVets.Core.Interfaces;
+using ClinicVets.Core.Session;
+
+namespace ClinicVets.UI.ViewModels;
+
+public partial class MainViewModel : ViewModelBase
+{
+    private readonly IAuthService     _auth;
+    private readonly ICustomerService _customers;
+    private readonly IAnimalService   _animals;
+    private readonly IVisitService    _visits;
+    private readonly IMedicineService _medicines;
+    private readonly ICustomerRepository _customerRepo;
+
+    [ObservableProperty] private ViewModelBase _currentPage = null!;
+    [ObservableProperty] private bool          _isLoggedIn  = false;
+    [ObservableProperty] private string        _welcomeText = string.Empty;
+    [ObservableProperty] private bool          _isVet       = false;
+    [ObservableProperty] private bool          _isSecretary = false;
+
+    public MainViewModel(
+        IAuthService auth, ICustomerService customers, IAnimalService animals,
+        IVisitService visits, IMedicineService medicines, ICustomerRepository customerRepo)
+    {
+        _auth         = auth;
+        _customers    = customers;
+        _animals      = animals;
+        _visits       = visits;
+        _medicines    = medicines;
+        _customerRepo = customerRepo;
+
+        CurrentPage = new LoginViewModel(_auth, OnLoginSuccess, NavigateToRegisterFromLogin);
+    }
+
+    private void OnLoginSuccess()
+    {
+        var user     = CurrentUserSession.CurrentUser!;
+        IsLoggedIn   = true;
+        IsVet        = CurrentUserSession.IsVeterinarian;
+        IsSecretary  = CurrentUserSession.IsSecretary;
+        WelcomeText  = $"Welcome, {user.FullName}";
+        NavigateToDashboard();
+    }
+
+    [RelayCommand]
+    public void NavigateToDashboard()
+        => CurrentPage = new DashboardViewModel(CurrentUserSession.CurrentUser!);
+
+    private void NavigateToRegisterFromLogin()
+        => CurrentPage = new RegisterEmployeeViewModel(_auth, GoBackToLogin);
+
+    private void GoBackToLogin()
+        => CurrentPage = new LoginViewModel(_auth, OnLoginSuccess, NavigateToRegisterFromLogin);
+
+    [RelayCommand]
+    public void NavigateToRegisterEmployee()
+        => CurrentPage = new RegisterEmployeeViewModel(_auth, NavigateToDashboard);
+
+    [RelayCommand]
+    public void NavigateToCustomerRegistration()
+        => CurrentPage = new CustomerRegistrationViewModel(_customers, NavigateToDashboard);
+
+    [RelayCommand]
+    public void NavigateToCustomerSearch()
+        => CurrentPage = new CustomerSearchViewModel(_customers, _animals);
+
+    [RelayCommand]
+    public void NavigateToAddAnimal()
+        => CurrentPage = new AddAnimalViewModel(_animals, _customerRepo, NavigateToDashboard);
+
+    [RelayCommand]
+    public void NavigateToAnimalSearch()
+        => CurrentPage = new AnimalSearchViewModel(_animals);
+
+    [RelayCommand]
+    public void NavigateToOpenVisit()
+        => CurrentPage = new OpenVisitViewModel(_visits, _animals, _medicines, NavigateToDashboard);
+
+    [RelayCommand]
+    public void NavigateToMedicineInventory()
+        => CurrentPage = new MedicineInventoryViewModel(_medicines);
+
+    [RelayCommand]
+    public void NavigateToAnimalVisits()
+        => CurrentPage = new AnimalVisitsViewModel(_visits, _animals);
+
+    [RelayCommand]
+    public void NavigateToAllVisits()
+        => CurrentPage = new AllVisitsViewModel(_visits, _animals);
+
+    [RelayCommand]
+    public void Logout()
+    {
+        CurrentUserSession.Clear();
+        IsLoggedIn  = false;
+        IsVet       = false;
+        IsSecretary = false;
+        WelcomeText = string.Empty;
+        CurrentPage = new LoginViewModel(_auth, OnLoginSuccess, NavigateToRegisterFromLogin);
+    }
+}

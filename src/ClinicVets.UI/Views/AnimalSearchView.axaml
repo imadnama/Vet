@@ -1,0 +1,126 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ClinicVets.UI.ViewModels"
+             x:Class="ClinicVets.UI.Views.AnimalSearchView"
+             x:DataType="vm:AnimalSearchViewModel">
+
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="36,32,36,32" Spacing="20">
+
+      <StackPanel Spacing="4">
+        <TextBlock Text="Search Animal" Classes="pageTitle" />
+        <TextBlock Text="Find a patient by name or chip number." Classes="pageSubtitle" />
+      </StackPanel>
+
+      <!-- Search card -->
+      <Border Classes="card">
+        <StackPanel Spacing="12">
+          <Grid ColumnDefinitions="*,10,*">
+            <StackPanel Grid.Column="0" Spacing="4">
+              <TextBlock Text="Name" Classes="fieldLabel" />
+              <TextBox Text="{Binding NameQuery}" PlaceholderText="Animal name..." Classes="field" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="4">
+              <TextBlock Text="Chip Number" Classes="fieldLabel" />
+              <TextBox Text="{Binding ChipQuery}" PlaceholderText="Exact chip number..." Classes="field" />
+            </StackPanel>
+          </Grid>
+          <Button Command="{Binding SearchCommand}" Classes="primary" HorizontalAlignment="Right" Padding="20,8">
+            Search
+          </Button>
+          <TextBlock Text="{Binding ErrorMsg}" Classes="errLabel"
+                     IsVisible="{Binding ErrorMsg, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        </StackPanel>
+      </Border>
+
+      <!-- Results -->
+      <Grid ColumnDefinitions="*,16,*"
+            IsVisible="{Binding Results.Count, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <!-- List -->
+        <Border Grid.Column="0" Classes="card" Padding="0">
+          <ListBox ItemsSource="{Binding Results}"
+                   SelectedItem="{Binding Selected}"
+                   Background="Transparent"
+                   BorderThickness="0">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Margin="14,10" Spacing="2">
+                  <TextBlock Text="{Binding Name}"
+                             FontWeight="SemiBold" FontSize="14"
+                             Foreground="{StaticResource TextPrimaryBrush}" />
+                  <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="{Binding Type}"
+                               FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" />
+                    <TextBlock Text="{Binding ChipNumber}"
+                               FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" />
+                  </StackPanel>
+                </StackPanel>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Border>
+
+        <!-- Detail -->
+        <Border Grid.Column="2" Classes="card"
+                IsVisible="{Binding Selected, Converter={x:Static ObjectConverters.IsNotNull}}">
+          <TextBlock Text="{Binding DetailText}"
+                     FontFamily="Cascadia Mono,Consolas,monospace"
+                     FontSize="13" LineHeight="20"
+                     Foreground="{StaticResource TextPrimaryBrush}" />
+        </Border>
+      </Grid>
+
+    </StackPanel>
+  </ScrollViewer>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.pageTitle">
+      <Setter Property="FontSize" Value="22" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.pageSubtitle">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="24,20" />
+    </Style>
+    <Style Selector="TextBlock.fieldLabel">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.errLabel">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+    </Style>
+    <Style Selector="TextBox.field">
+      <Setter Property="Background" Value="#0D1117" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="#22FFFFFF" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>

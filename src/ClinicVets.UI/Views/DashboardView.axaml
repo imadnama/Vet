@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ClinicVets.UI.ViewModels"
+             x:Class="ClinicVets.UI.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+
+  <ScrollViewer>
+    <StackPanel Margin="36,32,36,32" Spacing="32">
+
+      <!-- Greeting -->
+      <StackPanel Spacing="6">
+        <TextBlock Text="{Binding Greeting}"
+                   FontSize="26" FontWeight="Bold"
+                   Foreground="{StaticResource TextPrimaryBrush}" />
+        <StackPanel Orientation="Horizontal" Spacing="16">
+          <Border Background="{StaticResource AccentBrush}"
+                  CornerRadius="4" Padding="8,3">
+            <TextBlock Text="{Binding Role}"
+                       FontSize="11" FontWeight="SemiBold"
+                       Foreground="White" />
+          </Border>
+          <TextBlock Text="{Binding DateStamp}"
+                     FontSize="13"
+                     Foreground="{StaticResource TextSecondaryBrush}"
+                     VerticalAlignment="Center" />
+        </StackPanel>
+      </StackPanel>
+
+      <!-- Info cards row -->
+      <WrapPanel Orientation="Horizontal">
+        <Border Classes="infoCard" Margin="0,0,16,16">
+          <StackPanel Spacing="6">
+            <TextBlock Text="🐾" FontSize="28" />
+            <TextBlock Text="Animal Visits" FontSize="13" FontWeight="SemiBold"
+                       Foreground="{StaticResource TextSecondaryBrush}" />
+            <TextBlock Text="Search animal visit history from the sidebar."
+                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                       TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+        <Border Classes="infoCard" Margin="0,0,16,16">
+          <StackPanel Spacing="6">
+            <TextBlock Text="💊" FontSize="28" />
+            <TextBlock Text="Medicine Inventory" FontSize="13" FontWeight="SemiBold"
+                       Foreground="{StaticResource TextSecondaryBrush}" />
+            <TextBlock Text="Manage stock and pricing from the sidebar."
+                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                       TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+        <Border Classes="infoCard" Margin="0,0,16,16">
+          <StackPanel Spacing="6">
+            <TextBlock Text="👥" FontSize="28" />
+            <TextBlock Text="Customers &amp; Animals" FontSize="13" FontWeight="SemiBold"
+                       Foreground="{StaticResource TextSecondaryBrush}" />
+            <TextBlock Text="Register and search owners and their animals."
+                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                       TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+      </WrapPanel>
+
+    </StackPanel>
+  </ScrollViewer>
+
+  <UserControl.Styles>
+    <Style Selector="Border.infoCard">
+      <Setter Property="Background" Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="20,18" />
+      <Setter Property="Width" Value="200" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>

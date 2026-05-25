@@ -1,0 +1,122 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ClinicVets.UI.ViewModels"
+        x:Class="ClinicVets.UI.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="ClinicVets"
+        Width="1100" Height="700"
+        MinWidth="900" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource ContentBgBrush}">
+
+  <DockPanel>
+    <!-- ── Sidebar (visible only when logged in) ──────────────────────── -->
+    <Border DockPanel.Dock="Left"
+            Width="220"
+            Background="{StaticResource SidebarBgBrush}"
+            IsVisible="{Binding IsLoggedIn}">
+      <DockPanel>
+
+        <!-- Logo / branding -->
+        <StackPanel DockPanel.Dock="Top" Margin="20,28,20,24" Spacing="4">
+          <TextBlock Text="🐾 ClinicVets"
+                     FontSize="20" FontWeight="Bold"
+                     Foreground="{StaticResource AccentBrush}" />
+          <TextBlock Text="{Binding WelcomeText}"
+                     FontSize="11"
+                     Foreground="{StaticResource TextSecondaryBrush}"
+                     TextWrapping="Wrap" />
+        </StackPanel>
+
+        <!-- Logout at bottom -->
+        <Button DockPanel.Dock="Bottom"
+                Margin="12,0,12,20"
+                HorizontalAlignment="Stretch"
+                Command="{Binding LogoutCommand}"
+                Background="Transparent"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10,8"
+                Foreground="{StaticResource TextSecondaryBrush}">
+          <TextBlock Text="⏏  Logout" FontSize="13" />
+        </Button>
+
+        <!-- Nav items -->
+        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="12,0,12,0" Spacing="2">
+
+            <TextBlock Text="OVERVIEW" Margin="8,12,0,4"
+                       FontSize="10" FontWeight="SemiBold" LetterSpacing="2"
+                       Foreground="{StaticResource TextSecondaryBrush}" />
+            <Button Classes="nav" Command="{Binding NavigateToDashboardCommand}">🏠  Dashboard</Button>
+
+            <TextBlock Text="EMPLOYEES" Margin="8,14,0,4"
+                       FontSize="10" FontWeight="SemiBold" LetterSpacing="2"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       IsVisible="{Binding IsVet}" />
+            <Button Classes="nav" Command="{Binding NavigateToRegisterEmployeeCommand}"
+                    IsVisible="{Binding IsVet}">👤  Register Employee</Button>
+
+            <TextBlock Text="CUSTOMERS" Margin="8,14,0,4"
+                       FontSize="10" FontWeight="SemiBold" LetterSpacing="2"
+                       Foreground="{StaticResource TextSecondaryBrush}" />
+            <Button Classes="nav" Command="{Binding NavigateToCustomerRegistrationCommand}">➕  Register Customer</Button>
+            <Button Classes="nav" Command="{Binding NavigateToCustomerSearchCommand}">🔍  Search Customer</Button>
+
+            <TextBlock Text="ANIMALS" Margin="8,14,0,4"
+                       FontSize="10" FontWeight="SemiBold" LetterSpacing="2"
+                       Foreground="{StaticResource TextSecondaryBrush}" />
+            <Button Classes="nav" Command="{Binding NavigateToAddAnimalCommand}">➕  Add Animal</Button>
+            <Button Classes="nav" Command="{Binding NavigateToAnimalSearchCommand}">🔍  Search Animal</Button>
+
+            <TextBlock Text="VISITS" Margin="8,14,0,4"
+                       FontSize="10" FontWeight="SemiBold" LetterSpacing="2"
+                       Foreground="{StaticResource TextSecondaryBrush}" />
+            <Button Classes="nav" Command="{Binding NavigateToOpenVisitCommand}"
+                    IsVisible="{Binding IsVet}">📋  Open Visit</Button>
+            <Button Classes="nav" Command="{Binding NavigateToAnimalVisitsCommand}">🐾  Animal Visits</Button>
+            <Button Classes="nav" Command="{Binding NavigateToAllVisitsCommand}">📂  All Clinic Visits</Button>
+
+            <TextBlock Text="INVENTORY" Margin="8,14,0,4"
+                       FontSize="10" FontWeight="SemiBold" LetterSpacing="2"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       IsVisible="{Binding IsVet}" />
+            <Button Classes="nav" Command="{Binding NavigateToMedicineInventoryCommand}"
+                    IsVisible="{Binding IsVet}">💊  Medicine Inventory</Button>
+
+          </StackPanel>
+        </ScrollViewer>
+      </DockPanel>
+    </Border>
+
+    <!-- Separator line -->
+    <Border DockPanel.Dock="Left"
+            Width="1"
+            Background="{StaticResource BorderBrush}"
+            IsVisible="{Binding IsLoggedIn}" />
+
+    <!-- ── Content area ──────────────────────────────────────────────── -->
+    <Border Background="{StaticResource ContentBgBrush}">
+      <ContentControl Content="{Binding CurrentPage}" />
+    </Border>
+  </DockPanel>
+
+  <Window.Styles>
+    <Style Selector="Button.nav">
+      <Setter Property="Background"    Value="Transparent" />
+      <Setter Property="Foreground"    Value="{StaticResource TextPrimaryBrush}" />
+      <Setter Property="BorderBrush"   Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+      <Setter Property="Padding"       Value="10,7" />
+      <Setter Property="CornerRadius"  Value="6" />
+      <Setter Property="FontSize"      Value="13" />
+      <Setter Property="Cursor"        Value="Hand" />
+    </Style>
+    <Style Selector="Button.nav:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#22FFFFFF" />
+    </Style>
+  </Window.Styles>
+</Window>

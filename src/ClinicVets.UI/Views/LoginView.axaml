@@ -1,0 +1,115 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ClinicVets.UI.ViewModels"
+             x:Class="ClinicVets.UI.Views.LoginView"
+             x:DataType="vm:LoginViewModel"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+
+  <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="360">
+    <StackPanel Spacing="0">
+
+      <!-- Header -->
+      <StackPanel Margin="0,0,0,32" Spacing="6" HorizontalAlignment="Center">
+        <TextBlock Text="🐾 ClinicVets"
+                   FontSize="28" FontWeight="Bold"
+                   Foreground="{StaticResource AccentBrush}"
+                   HorizontalAlignment="Center" />
+        <TextBlock Text="Sign in to continue"
+                   FontSize="14"
+                   Foreground="{StaticResource TextSecondaryBrush}"
+                   HorizontalAlignment="Center" />
+      </StackPanel>
+
+      <!-- Card -->
+      <Border Background="{StaticResource CardBgBrush}"
+              BorderBrush="{StaticResource BorderBrush}"
+              BorderThickness="1" CornerRadius="12"
+              Padding="32,28">
+        <StackPanel Spacing="16">
+
+          <StackPanel Spacing="4">
+            <TextBlock Text="Username" Classes="fieldLabel" />
+            <TextBox Text="{Binding Username}"
+                     PlaceholderText="Enter username"
+                     Classes="field" />
+          </StackPanel>
+
+          <StackPanel Spacing="4">
+            <TextBlock Text="Password" Classes="fieldLabel" />
+            <TextBox Text="{Binding Password}"
+                     PasswordChar="•"
+                     PlaceholderText="Enter password"
+                     Classes="field" />
+          </StackPanel>
+
+          <TextBlock Text="{Binding Error}"
+                     Foreground="{StaticResource DangerBrush}"
+                     FontSize="12" IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                     TextWrapping="Wrap" />
+
+          <Button Command="{Binding LoginCommand}"
+                  HorizontalAlignment="Stretch"
+                  Classes="primary"
+                  Margin="0,4,0,0">
+            Sign In
+          </Button>
+
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4" Margin="0,4,0,0">
+            <TextBlock Text="New employee?"
+                       FontSize="12"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       VerticalAlignment="Center" />
+            <Button Command="{Binding RegisterCommand}"
+                    Classes="link"
+                    Padding="0">
+              Register
+            </Button>
+          </StackPanel>
+
+        </StackPanel>
+      </Border>
+
+    </StackPanel>
+  </Grid>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.fieldLabel">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="TextBox.field">
+      <Setter Property="Background" Value="#0D1117" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+      <Setter Property="FontSize" Value="14" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Padding" Value="0,10" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+    </Style>
+    <Style Selector="Button.link">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.link:pointerover">
+      <Setter Property="Foreground" Value="{StaticResource AccentHoverBrush}" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>

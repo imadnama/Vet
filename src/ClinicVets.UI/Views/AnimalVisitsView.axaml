@@ -1,0 +1,125 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ClinicVets.UI.ViewModels"
+             xmlns:m="using:ClinicVets.Core.Models"
+             x:Class="ClinicVets.UI.Views.AnimalVisitsView"
+             x:DataType="vm:AnimalVisitsViewModel">
+
+  <Grid RowDefinitions="Auto,*" Margin="36,32,36,32">
+
+    <StackPanel Grid.Row="0" Spacing="16" Margin="0,0,0,20">
+      <StackPanel Spacing="4">
+        <TextBlock Text="Animal Visit History" Classes="pageTitle" />
+        <TextBlock Text="Search for a patient to see their visit records." Classes="pageSubtitle" />
+      </StackPanel>
+
+      <!-- Search bar -->
+      <Border Classes="card">
+        <StackPanel Spacing="10">
+          <Grid ColumnDefinitions="*,10,*,10,Auto">
+            <StackPanel Grid.Column="0" Spacing="4">
+              <TextBlock Text="Animal Name" Classes="fieldLabel" />
+              <TextBox Text="{Binding NameQuery}" PlaceholderText="Search by name..." Classes="field" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Spacing="4">
+              <TextBlock Text="Chip Number" Classes="fieldLabel" />
+              <TextBox Text="{Binding ChipQuery}" PlaceholderText="Exact chip..." Classes="field" />
+            </StackPanel>
+            <Button Grid.Column="4" Command="{Binding SearchCommand}"
+                    Classes="primary" Padding="20,0"
+                    VerticalAlignment="Bottom" Height="36">Search</Button>
+          </Grid>
+          <TextBlock Text="{Binding StatusMsg}"
+                     FontSize="12"
+                     Foreground="{StaticResource TextSecondaryBrush}"
+                     IsVisible="{Binding StatusMsg, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        </StackPanel>
+      </Border>
+    </StackPanel>
+
+    <!-- Visit list + detail -->
+    <Grid Grid.Row="1" ColumnDefinitions="*,16,*"
+          IsVisible="{Binding Visits.Count, Converter={x:Static ObjectConverters.IsNotNull}}">
+
+      <!-- Visits list -->
+      <Border Grid.Column="0" Classes="card" Padding="0">
+        <ListBox ItemsSource="{Binding Visits}"
+                 SelectedItem="{Binding SelectedVisit}"
+                 Background="Transparent"
+                 BorderThickness="0">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="m:Visit">
+              <StackPanel Margin="14,10" Spacing="3">
+                <TextBlock Text="{Binding VisitDateTime, StringFormat='dd/MM/yyyy HH:mm'}"
+                           FontWeight="SemiBold" FontSize="13"
+                           Foreground="{StaticResource TextPrimaryBrush}" />
+                <TextBlock Text="{Binding Reason}"
+                           FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                           TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="{Binding TotalCost, StringFormat='₪{0:F2}'}"
+                           FontSize="11" Foreground="{StaticResource AccentBrush}" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+
+      <!-- Detail panel -->
+      <Border Grid.Column="2" Classes="card"
+              IsVisible="{Binding SelectedVisit, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <TextBlock Text="{Binding DetailText}"
+                   FontFamily="Cascadia Mono,Consolas,monospace"
+                   FontSize="12" LineHeight="20"
+                   Foreground="{StaticResource TextPrimaryBrush}" />
+      </Border>
+    </Grid>
+
+  </Grid>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.pageTitle">
+      <Setter Property="FontSize" Value="22" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.pageSubtitle">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="24,20" />
+    </Style>
+    <Style Selector="TextBlock.fieldLabel">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="TextBox.field">
+      <Setter Property="Background" Value="#0D1117" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="#22FFFFFF" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>
