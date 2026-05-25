@@ -31,7 +31,7 @@ static class Program
         IAuthService     authService     = new AuthService(employeeRepo);
         ICustomerService customerService = new CustomerService(customerRepo, animalRepo);
         IAnimalService   animalService   = new AnimalService(animalRepo, customerRepo);
-        IVisitService    visitService    = new VisitService(visitRepo, animalRepo);
+        IVisitService    visitService    = new VisitService(visitRepo, animalRepo, medicineRepo);
         IMedicineService medicineService = new MedicineService(medicineRepo);
 
         // ── Navigation callback ───────────────────────────────────────────────
