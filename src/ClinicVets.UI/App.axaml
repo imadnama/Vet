@@ -1,0 +1,80 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ClinicVets.UI.ViewModels"
+             xmlns:views="using:ClinicVets.UI.Views"
+             x:Class="ClinicVets.UI.App"
+             RequestedThemeVariant="Dark">
+
+  <Application.Styles>
+    <FluentTheme />
+    <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+  </Application.Styles>
+
+  <!-- ── Global color / brush resources ─────────────────────────────────── -->
+  <Application.Resources>
+    <ResourceDictionary>
+      <Color x:Key="AccentColor">#6366F1</Color>
+      <Color x:Key="AccentHoverColor">#4F46E5</Color>
+      <Color x:Key="SidebarBgColor">#0F1117</Color>
+      <Color x:Key="ContentBgColor">#161B22</Color>
+      <Color x:Key="CardBgColor">#1C2128</Color>
+      <Color x:Key="BorderColor">#30363D</Color>
+      <Color x:Key="TextPrimaryColor">#E6EDF3</Color>
+      <Color x:Key="TextSecondaryColor">#8B949E</Color>
+      <Color x:Key="SuccessColor">#3FB950</Color>
+      <Color x:Key="WarningColor">#D29922</Color>
+      <Color x:Key="DangerColor">#F85149</Color>
+
+      <SolidColorBrush x:Key="AccentBrush"          Color="{StaticResource AccentColor}" />
+      <SolidColorBrush x:Key="AccentHoverBrush"     Color="{StaticResource AccentHoverColor}" />
+      <SolidColorBrush x:Key="SidebarBgBrush"       Color="{StaticResource SidebarBgColor}" />
+      <SolidColorBrush x:Key="ContentBgBrush"       Color="{StaticResource ContentBgColor}" />
+      <SolidColorBrush x:Key="CardBgBrush"          Color="{StaticResource CardBgColor}" />
+      <SolidColorBrush x:Key="BorderBrush"          Color="{StaticResource BorderColor}" />
+      <SolidColorBrush x:Key="TextPrimaryBrush"     Color="{StaticResource TextPrimaryColor}" />
+      <SolidColorBrush x:Key="TextSecondaryBrush"   Color="{StaticResource TextSecondaryColor}" />
+      <SolidColorBrush x:Key="SuccessBrush"         Color="{StaticResource SuccessColor}" />
+      <SolidColorBrush x:Key="WarningBrush"         Color="{StaticResource WarningColor}" />
+      <SolidColorBrush x:Key="DangerBrush"          Color="{StaticResource DangerColor}" />
+      <SolidColorBrush x:Key="TransparentBrush"     Color="Transparent" />
+    </ResourceDictionary>
+  </Application.Resources>
+
+  <!-- ── DataTemplates: ViewModel → View ────────────────────────────────── -->
+  <Application.DataTemplates>
+    <DataTemplate DataType="{x:Type vm:LoginViewModel}">
+      <views:LoginView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:RegisterEmployeeViewModel}">
+      <views:RegisterEmployeeView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+      <views:DashboardView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:CustomerRegistrationViewModel}">
+      <views:CustomerRegistrationView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:CustomerSearchViewModel}">
+      <views:CustomerSearchView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:AddAnimalViewModel}">
+      <views:AddAnimalView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:AnimalSearchViewModel}">
+      <views:AnimalSearchView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:OpenVisitViewModel}">
+      <views:OpenVisitView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:MedicineInventoryViewModel}">
+      <views:MedicineInventoryView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:AnimalVisitsViewModel}">
+      <views:AnimalVisitsView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:AllVisitsViewModel}">
+      <views:AllVisitsView />
+    </DataTemplate>
+  </Application.DataTemplates>
+
+</Application>

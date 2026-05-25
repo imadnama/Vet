@@ -1,0 +1,173 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ClinicVets.UI.ViewModels"
+             x:Class="ClinicVets.UI.Views.RegisterEmployeeView"
+             x:DataType="vm:RegisterEmployeeViewModel">
+
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <Grid HorizontalAlignment="Center" Width="480" Margin="0,32,0,32">
+      <StackPanel Spacing="0">
+
+        <!-- Header -->
+        <StackPanel Margin="0,0,0,24" Spacing="4">
+          <TextBlock Text="Register Employee" Classes="pageTitle" />
+          <TextBlock Text="Create a new veterinarian or secretary account."
+                     Classes="pageSubtitle" />
+        </StackPanel>
+
+        <!-- Card -->
+        <Border Classes="card">
+          <StackPanel Spacing="14">
+
+            <!-- Full Name -->
+            <StackPanel Spacing="4">
+              <TextBlock Text="Full Name" Classes="fieldLabel" />
+              <TextBox Text="{Binding FullName}" Watermark="e.g. Dr. Sarah Cohen" Classes="field" />
+              <TextBlock Text="{Binding ErrFullName}" Classes="errLabel"
+                         IsVisible="{Binding ErrFullName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <!-- Username -->
+            <StackPanel Spacing="4">
+              <TextBlock Text="Username" Classes="fieldLabel" />
+              <TextBox Text="{Binding Username}" Watermark="Unique login name" Classes="field" />
+              <TextBlock Text="{Binding ErrUsername}" Classes="errLabel"
+                         IsVisible="{Binding ErrUsername, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <!-- Password row -->
+            <Grid ColumnDefinitions="*,12,*">
+              <StackPanel Grid.Column="0" Spacing="4">
+                <TextBlock Text="Password" Classes="fieldLabel" />
+                <TextBox Text="{Binding Password}" PasswordChar="•" Watermark="Password" Classes="field" />
+                <TextBlock Text="{Binding ErrPassword}" Classes="errLabel"
+                           IsVisible="{Binding ErrPassword, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+              </StackPanel>
+              <StackPanel Grid.Column="2" Spacing="4">
+                <TextBlock Text="Confirm Password" Classes="fieldLabel" />
+                <TextBox Text="{Binding ConfirmPassword}" PasswordChar="•" Watermark="Repeat" Classes="field" />
+                <TextBlock Text="{Binding ErrConfirmPassword}" Classes="errLabel"
+                           IsVisible="{Binding ErrConfirmPassword, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+              </StackPanel>
+            </Grid>
+
+            <!-- Employee Number -->
+            <StackPanel Spacing="4">
+              <TextBlock Text="Employee Number" Classes="fieldLabel" />
+              <TextBox Text="{Binding EmployeeNumber}" Watermark="e.g. EMP-001" Classes="field" />
+              <TextBlock Text="{Binding ErrEmployeeNumber}" Classes="errLabel"
+                         IsVisible="{Binding ErrEmployeeNumber, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <!-- Email -->
+            <StackPanel Spacing="4">
+              <TextBlock Text="Email" Classes="fieldLabel" />
+              <TextBox Text="{Binding Email}" Watermark="email@example.com" Classes="field" />
+              <TextBlock Text="{Binding ErrEmail}" Classes="errLabel"
+                         IsVisible="{Binding ErrEmail, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <!-- National ID -->
+            <StackPanel Spacing="4">
+              <TextBlock Text="National ID" Classes="fieldLabel" />
+              <TextBox Text="{Binding NationalId}" Watermark="9-digit ID" Classes="field" />
+              <TextBlock Text="{Binding ErrNationalId}" Classes="errLabel"
+                         IsVisible="{Binding ErrNationalId, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <!-- Role toggle -->
+            <StackPanel Spacing="6">
+              <TextBlock Text="Role" Classes="fieldLabel" />
+              <StackPanel Orientation="Horizontal" Spacing="16">
+                <RadioButton Content="Veterinarian"
+                             IsChecked="{Binding IsVeterinarian}"
+                             Foreground="{StaticResource TextPrimaryBrush}" />
+                <RadioButton Content="Secretary"
+                             IsChecked="{Binding IsVeterinarian, Converter={x:Static BoolConverters.Not}}"
+                             Foreground="{StaticResource TextPrimaryBrush}" />
+              </StackPanel>
+            </StackPanel>
+
+            <!-- Feedback -->
+            <TextBlock Text="{Binding GeneralError}" Classes="errLabel"
+                       IsVisible="{Binding GeneralError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            <TextBlock Text="{Binding SuccessMessage}"
+                       Foreground="{StaticResource SuccessBrush}" FontSize="12"
+                       IsVisible="{Binding SuccessMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            <!-- Actions -->
+            <Grid ColumnDefinitions="*,12,*" Margin="0,4,0,0">
+              <Button Grid.Column="0" Command="{Binding BackCommand}" Classes="secondary">← Back</Button>
+              <Button Grid.Column="2" Command="{Binding RegisterCommand}" Classes="primary">Register</Button>
+            </Grid>
+
+          </StackPanel>
+        </Border>
+
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.pageTitle">
+      <Setter Property="FontSize" Value="22" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.pageSubtitle">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="28,24" />
+    </Style>
+    <Style Selector="TextBlock.fieldLabel">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+    <Style Selector="TextBlock.errLabel">
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+    </Style>
+    <Style Selector="TextBox.field">
+      <Setter Property="Background" Value="#0D1117" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Padding" Value="0,9" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+    </Style>
+    <Style Selector="Button.secondary">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Padding" Value="0,9" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+  </UserControl.Styles>
+</UserControl>
