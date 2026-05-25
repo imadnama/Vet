@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/ClinicVets.UI/ClinicVets.UI.csproj" />
     <Project Path="src/ClinicVets.App/ClinicVets.App.csproj" />
     <Project Path="src/ClinicVets.Core/ClinicVets.Core.csproj" />
     <Project Path="src/ClinicVets.Data/ClinicVets.Data.csproj" />
