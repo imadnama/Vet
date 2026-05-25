@@ -49,10 +49,7 @@ public class VisitService : IVisitService
             return false;
         }
 
-        // Ensure animal exists by checking in the repository
-        // Note: This assumes visit.AnimalId is the database ID, set by OpenVisitForm
-        var animal = _animals.GetByChipNumber(visit.AnimalId.ToString());
-        if (animal == null)
+        if (!_animals.GetAll().Any(a => a.Id == visit.AnimalId))
         {
             error = "Selected animal not found in database.";
             return false;

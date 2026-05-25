@@ -21,6 +21,7 @@ public class OpenVisitForm : Form
     private CheckedListBox lstMedicines = null!;
     private Label lblTotalCost = null!;
     private Label lblErrorMessage = null!;
+    private Label lblVaccineWarning = null!;
     private Button btnSave = null!;
     private Button btnCancel = null!;
 
@@ -66,9 +67,22 @@ public class OpenVisitForm : Form
             Width = 300,
             DropDownStyle = ComboBoxStyle.DropDownList
         };
+        cmbAnimal.SelectedIndexChanged += CmbAnimal_SelectedIndexChanged;
         Controls.Add(lblAnimal);
         Controls.Add(cmbAnimal);
         y += 40;
+
+        // Vaccination warning (hidden until an animal is selected)
+        lblVaccineWarning = new Label
+        {
+            Left = 150, Top = y, Width = 300,
+            ForeColor = Color.OrangeRed,
+            Font = new Font(Font.FontFamily, 8.5f, FontStyle.Bold),
+            AutoSize = false, Height = 20,
+            Text = string.Empty
+        };
+        Controls.Add(lblVaccineWarning);
+        y += 24;
 
         // Reason
         var lblReason = new Label { Text = "Reason:", Left = 20, Top = y, Width = 100 };
@@ -155,6 +169,15 @@ public class OpenVisitForm : Form
 
         // When medicine selection changes, recalculate cost
         lstMedicines.ItemCheck += (_, _) => RecalculateCost();
+    }
+
+    private void CmbAnimal_SelectedIndexChanged(object? sender, EventArgs e)
+    {
+        if (cmbAnimal.SelectedIndex < 0) return;
+        var animal = _allAnimals[cmbAnimal.SelectedIndex];
+        lblVaccineWarning.Text = _animalService.NeedsVaccination(animal)
+            ? "⚠ This animal is due for its annual vaccination!"
+            : string.Empty;
     }
 
     private void LoadData()
