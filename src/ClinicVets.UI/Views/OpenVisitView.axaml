@@ -41,7 +41,7 @@
           </StackPanel>
 
           <!-- Visit Date + Vet -->
-          <Grid ColumnDefinitions="*,12,*">
+          <Grid ColumnDefinitions="*,12,*,12,*">
             <StackPanel Grid.Column="0" Spacing="4">
               <TextBlock Text="Visit Date" Classes="fieldLabel" />
               <DatePicker SelectedDate="{Binding VisitDate}"
@@ -51,6 +51,14 @@
                           Foreground="{StaticResource TextPrimaryBrush}" />
             </StackPanel>
             <StackPanel Grid.Column="2" Spacing="4">
+              <TextBlock Text="Visit Time" Classes="fieldLabel" />
+              <TimePicker SelectedTime="{Binding VisitTime}"
+                          HorizontalAlignment="Stretch"
+                          Background="#0D1117"
+                          BorderBrush="{StaticResource BorderBrush}"
+                          Foreground="{StaticResource TextPrimaryBrush}" />
+            </StackPanel>
+            <StackPanel Grid.Column="4" Spacing="4">
               <TextBlock Text="Veterinarian" Classes="fieldLabel" />
               <TextBox Text="{Binding VetName}" IsReadOnly="True"
                        Background="#0D1117" BorderBrush="{StaticResource BorderBrush}"

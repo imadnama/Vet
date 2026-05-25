@@ -58,6 +58,22 @@ public class VisitService : IVisitService
             return false;
         }
 
+        foreach (var med in visit.Medicines)
+        {
+            var current = _medicines.GetById(med.Id);
+            if (current is null)
+            {
+                error = $"Medicine '{med.Name}' was not found in inventory.";
+                return false;
+            }
+
+            if (current.Quantity <= 0)
+            {
+                error = $"Medicine '{current.Name}' is out of stock.";
+                return false;
+            }
+        }
+
         // Calculate total cost
         visit.TotalCost = CalculateTotalCost(BaseVisitPrice, visit.Medicines);
 

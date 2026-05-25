@@ -43,7 +43,7 @@ public partial class RegisterEmployeeViewModel : ViewModelBase
         ClearErrors();
         bool valid = true;
 
-        if (string.IsNullOrWhiteSpace(FullName))   { ErrFullName = "Full name is required."; valid = false; }
+        if (!EmployeeValidator.ValidateFullName(FullName.Trim(), out var ef))   { ErrFullName = ef; valid = false; }
         if (!EmployeeValidator.ValidateUsername(Username.Trim(), out var eu))       { ErrUsername = eu; valid = false; }
         if (!EmployeeValidator.ValidatePassword(Password, out var ep))              { ErrPassword = ep; valid = false; }
         else if (Password != ConfirmPassword)                                       { ErrConfirmPassword = "Passwords do not match."; valid = false; }

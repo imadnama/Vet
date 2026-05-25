@@ -55,6 +55,10 @@
             <Button Command="{Binding DeleteCommand}" Classes="danger" Padding="20,8">Delete Selected</Button>
           </StackPanel>
 
+          <TextBlock Text="{Binding LowStockMsg}"
+                     Foreground="{StaticResource WarningBrush}" FontSize="12"
+                     IsVisible="{Binding LowStockMsg, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
           <TextBlock Text="{Binding ErrorMsg}" Classes="errLabel"
                      IsVisible="{Binding ErrorMsg, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
           <TextBlock Text="{Binding SuccessMsg}"

@@ -41,6 +41,9 @@
             <DataGridTextColumn Header="Animal"
                                 Binding="{Binding AnimalName}"
                                 Width="140" />
+            <DataGridTextColumn Header="Veterinarian"
+                                Binding="{Binding VetName}"
+                                Width="150" />
             <DataGridTextColumn Header="Reason"
                                 Binding="{Binding Visit.Reason}"
                                 Width="*" />

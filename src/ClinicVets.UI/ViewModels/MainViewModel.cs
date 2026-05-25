@@ -13,6 +13,7 @@ public partial class MainViewModel : ViewModelBase
     private readonly IVisitService    _visits;
     private readonly IMedicineService _medicines;
     private readonly ICustomerRepository _customerRepo;
+    private readonly IEmployeeRepository _employeeRepo;
 
     [ObservableProperty] private ViewModelBase _currentPage = null!;
     [ObservableProperty] private bool          _isLoggedIn  = false;
@@ -22,7 +23,7 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel(
         IAuthService auth, ICustomerService customers, IAnimalService animals,
-        IVisitService visits, IMedicineService medicines, ICustomerRepository customerRepo)
+        IVisitService visits, IMedicineService medicines, ICustomerRepository customerRepo, IEmployeeRepository employeeRepo)
     {
         _auth         = auth;
         _customers    = customers;
@@ -30,6 +31,7 @@ public partial class MainViewModel : ViewModelBase
         _visits       = visits;
         _medicines    = medicines;
         _customerRepo = customerRepo;
+        _employeeRepo = employeeRepo;
 
         CurrentPage = new LoginViewModel(_auth, OnLoginSuccess, NavigateToRegisterFromLogin);
     }
@@ -62,11 +64,17 @@ public partial class MainViewModel : ViewModelBase
 
     [RelayCommand]
     public void NavigateToCustomerRegistration()
-        => CurrentPage = new CustomerRegistrationViewModel(_customers, NavigateToDashboard);
+    {
+        if (!CurrentUserSession.IsSecretary) return;
+        CurrentPage = new CustomerRegistrationViewModel(_customers, NavigateToDashboard);
+    }
 
     [RelayCommand]
     public void NavigateToCustomerSearch()
-        => CurrentPage = new CustomerSearchViewModel(_customers, _animals);
+    {
+        if (!CurrentUserSession.IsSecretary) return;
+        CurrentPage = new CustomerSearchViewModel(_customers, _animals);
+    }
 
     [RelayCommand]
     public void NavigateToAddAnimal()
@@ -78,19 +86,31 @@ public partial class MainViewModel : ViewModelBase
 
     [RelayCommand]
     public void NavigateToOpenVisit()
-        => CurrentPage = new OpenVisitViewModel(_visits, _animals, _medicines, NavigateToDashboard);
+    {
+        if (!CurrentUserSession.IsVeterinarian) return;
+        CurrentPage = new OpenVisitViewModel(_visits, _animals, _medicines, NavigateToDashboard);
+    }
 
     [RelayCommand]
     public void NavigateToMedicineInventory()
-        => CurrentPage = new MedicineInventoryViewModel(_medicines);
+    {
+        if (!CurrentUserSession.IsVeterinarian) return;
+        CurrentPage = new MedicineInventoryViewModel(_medicines);
+    }
 
     [RelayCommand]
     public void NavigateToAnimalVisits()
-        => CurrentPage = new AnimalVisitsViewModel(_visits, _animals);
+    {
+        if (!CurrentUserSession.IsVeterinarian) return;
+        CurrentPage = new AnimalVisitsViewModel(_visits, _animals, _employeeRepo);
+    }
 
     [RelayCommand]
     public void NavigateToAllVisits()
-        => CurrentPage = new AllVisitsViewModel(_visits, _animals);
+    {
+        if (!CurrentUserSession.IsVeterinarian) return;
+        CurrentPage = new AllVisitsViewModel(_visits, _animals, _employeeRepo);
+    }
 
     [RelayCommand]
     public void Logout()

@@ -43,6 +43,7 @@ public class AuthService : IAuthService
     {
         try
         {
+            if (!EmployeeValidator.ValidateFullName(employee.FullName, out _)) return false;
             if (!EmployeeValidator.ValidateUsername(employee.Username, out _)) return false;
             if (!EmployeeValidator.ValidatePassword(plainPassword, out _)) return false;
             if (!EmployeeValidator.ValidateEmployeeNumber(employee.EmployeeNumber, out _)) return false;
