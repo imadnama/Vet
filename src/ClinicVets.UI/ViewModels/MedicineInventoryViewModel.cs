@@ -18,6 +18,7 @@ public partial class MedicineInventoryViewModel : ViewModelBase
     [ObservableProperty] private string    _errQty     = string.Empty;
     [ObservableProperty] private string    _successMsg = string.Empty;
     [ObservableProperty] private string    _errorMsg   = string.Empty;
+    [ObservableProperty] private string    _lowStockMsg = string.Empty;
     [ObservableProperty] private Medicine? _selected;
 
     public ObservableCollection<Medicine> Medicines { get; } = new();
@@ -33,6 +34,10 @@ public partial class MedicineInventoryViewModel : ViewModelBase
         Medicines.Clear();
         foreach (var m in _service.GetAll())
             Medicines.Add(m);
+        var lowCount = Medicines.Count(m => m.Quantity <= 5);
+        LowStockMsg = lowCount == 0
+            ? "All medicines are well stocked."
+            : $"{lowCount} medicine(s) are low in stock.";
     }
 
     [RelayCommand]

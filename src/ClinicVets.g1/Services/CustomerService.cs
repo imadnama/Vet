@@ -29,6 +29,8 @@ public class CustomerService : ICustomerService
             if (!CustomerValidator.ValidatePhone(customer.Phone, out error)) return false;
             if (!CustomerValidator.ValidateEmail(customer.Email, out error)) return false;
 
+            customer.Phone = NormalizePhone(customer.Phone);
+
             if (_customers.NationalIdExists(customer.NationalId))
             {
                 error = "A customer with this National ID already exists.";
@@ -49,9 +51,12 @@ public class CustomerService : ICustomerService
         => _customers.GetByNationalId(nationalId);
 
     public Customer? SearchByPhone(string phone)
-        => _customers.GetByPhone(phone);
+        => _customers.GetByPhone(NormalizePhone(phone));
 
     /// <summary>Returns all animals whose OwnerId matches the given customer.</summary>
     public IEnumerable<Animal> GetCustomerAnimals(int customerId)
         => _animals.GetByOwnerId(customerId);
+
+    private static string NormalizePhone(string phone)
+        => phone.Replace("-", "").Replace(" ", "").Trim();
 }

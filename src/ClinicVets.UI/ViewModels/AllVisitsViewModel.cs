@@ -10,6 +10,7 @@ public partial class AllVisitsViewModel : ViewModelBase
 {
     private readonly IVisitService   _visits;
     private readonly IAnimalService  _animals;
+    private readonly IEmployeeRepository _employees;
 
     [ObservableProperty] private string   _statusMsg  = string.Empty;
     [ObservableProperty] private VisitRow? _selected;
@@ -17,12 +18,13 @@ public partial class AllVisitsViewModel : ViewModelBase
 
     public ObservableCollection<VisitRow> Rows { get; } = new();
 
-    public record VisitRow(Visit Visit, string AnimalName);
+    public record VisitRow(Visit Visit, string AnimalName, string VetName);
 
-    public AllVisitsViewModel(IVisitService visits, IAnimalService animals)
+    public AllVisitsViewModel(IVisitService visits, IAnimalService animals, IEmployeeRepository employees)
     {
-        _visits  = visits;
-        _animals = animals;
+        _visits    = visits;
+        _animals   = animals;
+        _employees = employees;
         Load();
     }
 
@@ -30,10 +32,12 @@ public partial class AllVisitsViewModel : ViewModelBase
     {
         Rows.Clear();
         var allAnimals = _animals.GetAll().ToDictionary(a => a.Id, a => a.Name);
+        var allEmployees = _employees.GetAll().ToDictionary(e => e.Id, e => e.FullName);
         foreach (var v in _visits.GetAllVisits().OrderByDescending(v => v.VisitDateTime))
         {
             var name = allAnimals.TryGetValue(v.AnimalId, out var n) ? n : $"Animal #{v.AnimalId}";
-            Rows.Add(new VisitRow(v, name));
+            var vetName = allEmployees.TryGetValue(v.VetEmployeeId, out var vet) ? vet : $"Employee #{v.VetEmployeeId}";
+            Rows.Add(new VisitRow(v, name, vetName));
         }
         StatusMsg = Rows.Count == 0 ? "No visits recorded." : $"{Rows.Count} visits total.";
     }
@@ -54,7 +58,7 @@ public partial class AllVisitsViewModel : ViewModelBase
             $"Date     : {v.VisitDateTime:dd/MM/yyyy HH:mm}\n" +
             $"Reason   : {v.Reason}\n" +
             $"Diagnosis: {(string.IsNullOrWhiteSpace(v.Diagnosis) ? "(none)" : v.Diagnosis)}\n" +
-            $"Vet ID   : {v.VetEmployeeId}\n" +
+            $"Vet      : {value.VetName}\n" +
             $"Medicines:\n{meds}\n" +
             $"Cost     : ₪{v.TotalCost:F2}";
     }

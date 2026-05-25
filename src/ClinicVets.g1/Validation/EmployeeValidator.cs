@@ -7,6 +7,29 @@ namespace ClinicVets.g1.Validation;
 /// </summary>
 public static class EmployeeValidator
 {
+    // Rules: letters and spaces only, no digits or punctuation.
+    public static bool ValidateFullName(string fullName, out string error)
+    {
+        error = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(fullName))
+        {
+            error = "Full name is required.";
+            return false;
+        }
+
+        foreach (char c in fullName.Trim())
+        {
+            if (!char.IsLetter(c) && c != ' ')
+            {
+                error = "Full name must contain letters only.";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     // CFG target function 1 — used for testing diagrams.
     // Rules: 6-8 chars, at most 2 digits, all other chars must be English letters.
     public static bool ValidateUsername(string username, out string error)

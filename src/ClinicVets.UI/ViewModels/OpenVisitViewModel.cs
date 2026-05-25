@@ -26,6 +26,7 @@ public partial class OpenVisitViewModel : ViewModelBase
     [ObservableProperty] private Animal?         _selectedAnimal;
     [ObservableProperty] private string          _reason           = string.Empty;
     [ObservableProperty] private DateTimeOffset  _visitDate        = DateTimeOffset.Now;
+    [ObservableProperty] private TimeSpan        _visitTime        = DateTimeOffset.Now.TimeOfDay;
     [ObservableProperty] private string          _diagnosis        = string.Empty;
     [ObservableProperty] private string          _vetName          = string.Empty;
     [ObservableProperty] private decimal         _totalCost        = 100m;
@@ -47,7 +48,7 @@ public partial class OpenVisitViewModel : ViewModelBase
         foreach (var a in _animals.GetAll())
             Animals.Add(a);
 
-        foreach (var m in _medicines.GetAll())
+        foreach (var m in _medicines.GetAll().Where(m => m.Quantity > 0))
         {
             var item = new MedicineItem(m);
             item.PropertyChanged += (_, _) => RecalculateCost();
@@ -79,7 +80,7 @@ public partial class OpenVisitViewModel : ViewModelBase
         {
             AnimalId      = SelectedAnimal.Id,
             Reason        = Reason,
-            VisitDateTime = VisitDate.DateTime,
+            VisitDateTime = VisitDate.Date + VisitTime,
             Diagnosis     = Diagnosis,
             VetEmployeeId = CurrentUserSession.CurrentUser?.Id ?? 0,
             Medicines     = MedicineItems.Where(i => i.IsSelected).Select(i => i.Medicine).ToList(),

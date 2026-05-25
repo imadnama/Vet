@@ -32,7 +32,7 @@ public class App : Application
 
         var mainVm = new MainViewModel(
             authService, customerService, animalService,
-            visitService, medicineService, customerRepo);
+            visitService, medicineService, customerRepo, employeeRepo);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

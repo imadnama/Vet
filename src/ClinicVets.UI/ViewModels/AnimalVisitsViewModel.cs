@@ -10,6 +10,7 @@ public partial class AnimalVisitsViewModel : ViewModelBase
 {
     private readonly IVisitService  _visits;
     private readonly IAnimalService _animals;
+    private readonly IEmployeeRepository _employees;
 
     [ObservableProperty] private string  _nameQuery      = string.Empty;
     [ObservableProperty] private string  _chipQuery      = string.Empty;
@@ -19,10 +20,11 @@ public partial class AnimalVisitsViewModel : ViewModelBase
 
     public ObservableCollection<Visit> Visits { get; } = new();
 
-    public AnimalVisitsViewModel(IVisitService visits, IAnimalService animals)
+    public AnimalVisitsViewModel(IVisitService visits, IAnimalService animals, IEmployeeRepository employees)
     {
-        _visits  = visits;
-        _animals = animals;
+        _visits    = visits;
+        _animals   = animals;
+        _employees = employees;
     }
 
     [RelayCommand]
@@ -54,12 +56,14 @@ public partial class AnimalVisitsViewModel : ViewModelBase
         var meds = value.Medicines.Count > 0
             ? string.Join("\n", value.Medicines.Select(m => $"  • {m.Name}  ₪{m.Price:F2}"))
             : "  (none)";
+        var vetName = _employees.GetAll().FirstOrDefault(e => e.Id == value.VetEmployeeId)?.FullName
+            ?? $"Employee #{value.VetEmployeeId}";
         DetailText =
             $"Visit #{value.Id}\n" +
             $"Date     : {value.VisitDateTime:dd/MM/yyyy HH:mm}\n" +
             $"Reason   : {value.Reason}\n" +
             $"Diagnosis: {(string.IsNullOrWhiteSpace(value.Diagnosis) ? "(none)" : value.Diagnosis)}\n" +
-            $"Vet ID   : {value.VetEmployeeId}\n" +
+            $"Vet      : {vetName}\n" +
             $"Medicines:\n{meds}\n" +
             $"Cost     : ₪{value.TotalCost:F2}";
     }
