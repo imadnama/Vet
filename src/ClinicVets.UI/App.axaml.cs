@@ -36,7 +36,7 @@ public class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow { DataContext = mainVm };
+            desktop.MainWindow = new SplashWindow(mainVm);
         }
 
         base.OnFrameworkInitializationCompleted();

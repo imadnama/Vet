@@ -31,7 +31,7 @@ public partial class MainViewModel : ViewModelBase
         _medicines    = medicines;
         _customerRepo = customerRepo;
 
-        CurrentPage = new LoginViewModel(_auth, OnLoginSuccess);
+        CurrentPage = new LoginViewModel(_auth, OnLoginSuccess, NavigateToRegisterFromLogin);
     }
 
     private void OnLoginSuccess()
@@ -47,6 +47,12 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     public void NavigateToDashboard()
         => CurrentPage = new DashboardViewModel(CurrentUserSession.CurrentUser!);
+
+    private void NavigateToRegisterFromLogin()
+        => CurrentPage = new RegisterEmployeeViewModel(_auth, GoBackToLogin);
+
+    private void GoBackToLogin()
+        => CurrentPage = new LoginViewModel(_auth, OnLoginSuccess, NavigateToRegisterFromLogin);
 
     [RelayCommand]
     public void NavigateToRegisterEmployee()
@@ -92,6 +98,6 @@ public partial class MainViewModel : ViewModelBase
         IsVet       = false;
         IsSecretary = false;
         WelcomeText = string.Empty;
-        CurrentPage = new LoginViewModel(_auth, OnLoginSuccess);
+        CurrentPage = new LoginViewModel(_auth, OnLoginSuccess, NavigateToRegisterFromLogin);
     }
 }

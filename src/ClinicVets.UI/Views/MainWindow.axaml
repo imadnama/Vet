@@ -9,14 +9,10 @@
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource ContentBgBrush}">
 
-  <Grid>
+  <DockPanel>
     <!-- ── Sidebar (visible only when logged in) ──────────────────────── -->
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="220" />
-      <ColumnDefinition Width="*" />
-    </Grid.ColumnDefinitions>
-
-    <Border Grid.Column="0"
+    <Border DockPanel.Dock="Left"
+            Width="220"
             Background="{StaticResource SidebarBgBrush}"
             IsVisible="{Binding IsLoggedIn}">
       <DockPanel>
@@ -94,19 +90,17 @@
       </DockPanel>
     </Border>
 
-    <!-- ── Content area ──────────────────────────────────────────────── -->
-    <Border Grid.Column="1"
-            Background="{StaticResource ContentBgBrush}">
-      <ContentControl Content="{Binding CurrentPage}" />
-    </Border>
-
-    <!-- Left border line between sidebar and content -->
-    <Border Grid.Column="1"
-            HorizontalAlignment="Left"
+    <!-- Separator line -->
+    <Border DockPanel.Dock="Left"
             Width="1"
             Background="{StaticResource BorderBrush}"
             IsVisible="{Binding IsLoggedIn}" />
-  </Grid>
+
+    <!-- ── Content area ──────────────────────────────────────────────── -->
+    <Border Background="{StaticResource ContentBgBrush}">
+      <ContentControl Content="{Binding CurrentPage}" />
+    </Border>
+  </DockPanel>
 
   <Window.Styles>
     <Style Selector="Button.nav">

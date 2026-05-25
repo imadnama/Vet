@@ -2,9 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ClinicVets.UI.ViewModels"
              x:Class="ClinicVets.UI.Views.LoginView"
-             x:DataType="vm:LoginViewModel">
+             x:DataType="vm:LoginViewModel"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
 
-  <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Width="360">
+  <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="360">
     <StackPanel Spacing="0">
 
       <!-- Header -->
@@ -53,6 +55,18 @@
             Sign In
           </Button>
 
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4" Margin="0,4,0,0">
+            <TextBlock Text="New employee?"
+                       FontSize="12"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       VerticalAlignment="Center" />
+            <Button Command="{Binding RegisterCommand}"
+                    Classes="link"
+                    Padding="0">
+              Register
+            </Button>
+          </StackPanel>
+
         </StackPanel>
       </Border>
 
@@ -86,6 +100,16 @@
     </Style>
     <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
       <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+    </Style>
+    <Style Selector="Button.link">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.link:pointerover">
+      <Setter Property="Foreground" Value="{StaticResource AccentHoverBrush}" />
     </Style>
   </UserControl.Styles>
 </UserControl>
