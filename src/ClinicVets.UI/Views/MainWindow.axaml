@@ -51,14 +51,7 @@
                        Foreground="{StaticResource TextSecondaryBrush}" />
             <Button Classes="nav" Command="{Binding NavigateToDashboardCommand}">🏠  Dashboard</Button>
 
-            <TextBlock Text="EMPLOYEES" Margin="8,14,0,4"
-                       FontSize="10" FontWeight="SemiBold" LetterSpacing="2"
-                       Foreground="{StaticResource TextSecondaryBrush}"
-                       IsVisible="{Binding IsVet}" />
-            <Button Classes="nav" Command="{Binding NavigateToRegisterEmployeeCommand}"
-                    IsVisible="{Binding IsVet}">👤  Register Employee</Button>
-
-            <TextBlock Text="CUSTOMERS" Margin="8,14,0,4"
+<TextBlock Text="CUSTOMERS" Margin="8,14,0,4"
                        FontSize="10" FontWeight="SemiBold" LetterSpacing="2"
                        Foreground="{StaticResource TextSecondaryBrush}"
                        IsVisible="{Binding IsSecretary}" />
