@@ -127,11 +127,13 @@ public class MainForm : Form
             ForeColor = Color.FromArgb(21, 101, 192),
         };
 
-        var btnAddAnimal  = MakeNavButton("Add Animal",    Color.FromArgb(21, 101, 192), new Point(16,  30));
-        var btnSrchAnimal = MakeNavButton("Search Animal", Color.FromArgb(21, 101, 192), new Point(186, 30));
+        var btnAddAnimal  = MakeNavButton("Add Animal",           Color.FromArgb(21, 101, 192), new Point(16,  30));
+        var btnSrchAnimal = MakeNavButton("Search Animal",        Color.FromArgb(21, 101, 192), new Point(186, 30));
+        var btnCatalog    = MakeNavButton("Animal Type Catalog",  Color.FromArgb(21, 101, 192), new Point(356, 30));
         btnAddAnimal.Click    += (_, _) => OpenAddAnimal();
         btnSrchAnimal.Click   += (_, _) => OpenAnimalSearch();
-        gbAnimals.Controls.AddRange(new Control[] { btnAddAnimal, btnSrchAnimal });
+        btnCatalog.Click      += (_, _) => OpenAnimalTypesCatalog();
+        gbAnimals.Controls.AddRange(new Control[] { btnAddAnimal, btnSrchAnimal, btnCatalog });
 
         // ── Section: Visits & Medicines (Vet only) ───────────────────────────
         _gbVisits = new GroupBox
@@ -223,6 +225,9 @@ public class MainForm : Form
 
     private void OpenAnimalSearch()
         => new AnimalSearchForm(_animalService).ShowDialog(this);
+
+    private void OpenAnimalTypesCatalog()
+        => new AnimalTypesCatalogForm().ShowDialog(this);
 
 private void OpenVisit()
     {

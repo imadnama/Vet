@@ -47,7 +47,7 @@ public static class EmployeeValidator
     }
 
     // CFG target function 2 — used for testing diagrams.
-    // Rules: 8-10 chars, at least 1 letter, 1 digit, 1 special char from {!, #, $, ,}.
+    // Rules: 8-10 chars, at least 1 letter, 1 digit, 1 special char from {!, #, $}.
     public static bool ValidatePassword(string password, out string error)
     {
         error = string.Empty;
@@ -67,7 +67,7 @@ public static class EmployeeValidator
         bool hasLetter = false;
         bool hasDigit = false;
         bool hasSpecial = false;
-        char[] allowedSpecials = new char[] { '!', '#', '$', ',' };
+        char[] allowedSpecials = ['!', '#', '$'];
 
         foreach (char c in password)
         {
@@ -90,7 +90,7 @@ public static class EmployeeValidator
 
         if (!hasSpecial)
         {
-            error = "Password must contain at least one special character (!, #, $, ,).";
+            error = "Password must contain at least one special character (!, #, $).";
             return false;
         }
 
