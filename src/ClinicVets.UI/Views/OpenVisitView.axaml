@@ -84,17 +84,16 @@
           <TextBlock Text="Select medicines to include in this visit:"
                      FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" />
 
-          <ItemsControl Name="MedicineItemsControl" ItemsSource="{Binding Medicines}">
+          <ItemsControl ItemsSource="{Binding MedicineItems}">
             <ItemsControl.ItemTemplate>
-              <DataTemplate x:DataType="m:Medicine">
+              <DataTemplate x:DataType="vm:MedicineItem">
                 <Border Padding="0,3">
-                  <CheckBox Name="MedCheckBox"
-                            Tag="{Binding}"
+                  <CheckBox IsChecked="{Binding IsSelected}"
                             Foreground="{StaticResource TextPrimaryBrush}">
                     <TextBlock>
-                      <Run Text="{Binding Name}" />
+                      <Run Text="{Binding Medicine.Name}" />
                       <Run Text=" — " Foreground="{StaticResource TextSecondaryBrush}" />
-                      <Run Text="{Binding Price, StringFormat='₪{0:F2}'}" Foreground="{StaticResource TextSecondaryBrush}" />
+                      <Run Text="{Binding Medicine.Price, StringFormat='₪{0:F2}'}" Foreground="{StaticResource TextSecondaryBrush}" />
                     </TextBlock>
                   </CheckBox>
                 </Border>

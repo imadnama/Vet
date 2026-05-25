@@ -7,6 +7,15 @@ using ClinicVets.Core.Session;
 
 namespace ClinicVets.UI.ViewModels;
 
+public partial class MedicineItem : ObservableObject
+{
+    public Medicine Medicine { get; }
+
+    [ObservableProperty] private bool _isSelected;
+
+    public MedicineItem(Medicine medicine) => Medicine = medicine;
+}
+
 public partial class OpenVisitViewModel : ViewModelBase
 {
     private readonly IVisitService    _visits;
@@ -24,9 +33,8 @@ public partial class OpenVisitViewModel : ViewModelBase
     [ObservableProperty] private string          _successMsg       = string.Empty;
     [ObservableProperty] private string          _vaccineWarning   = string.Empty;
 
-    public ObservableCollection<Animal>   Animals   { get; } = new();
-    public ObservableCollection<Medicine> Medicines { get; } = new();
-    public ObservableCollection<Medicine> Selected  { get; } = new();
+    public ObservableCollection<Animal>       Animals       { get; } = new();
+    public ObservableCollection<MedicineItem> MedicineItems { get; } = new();
 
     public OpenVisitViewModel(IVisitService visits, IAnimalService animals, IMedicineService medicines, Action onBack)
     {
@@ -36,8 +44,21 @@ public partial class OpenVisitViewModel : ViewModelBase
         _onBack    = onBack;
         VetName    = CurrentUserSession.CurrentUser?.FullName ?? string.Empty;
 
-        foreach (var a in _animals.GetAll())   Animals.Add(a);
-        foreach (var m in _medicines.GetAll()) Medicines.Add(m);
+        foreach (var a in _animals.GetAll())
+            Animals.Add(a);
+
+        foreach (var m in _medicines.GetAll())
+        {
+            var item = new MedicineItem(m);
+            item.PropertyChanged += (_, _) => RecalculateCost();
+            MedicineItems.Add(item);
+        }
+    }
+
+    private void RecalculateCost()
+    {
+        var selected = MedicineItems.Where(i => i.IsSelected).Select(i => i.Medicine);
+        TotalCost = _visits.CalculateTotalCost(100m, selected);
     }
 
     partial void OnSelectedAnimalChanged(Animal? value)
@@ -45,13 +66,6 @@ public partial class OpenVisitViewModel : ViewModelBase
         VaccineWarning = (value is not null && _animals.NeedsVaccination(value))
             ? "⚠ This animal is due for its annual vaccination!"
             : string.Empty;
-    }
-
-    public void ToggleMedicine(Medicine m, bool add)
-    {
-        if (add && !Selected.Contains(m)) Selected.Add(m);
-        else if (!add) Selected.Remove(m);
-        TotalCost = _visits.CalculateTotalCost(100m, Selected);
     }
 
     [RelayCommand]
@@ -68,7 +82,7 @@ public partial class OpenVisitViewModel : ViewModelBase
             VisitDateTime = VisitDate.DateTime,
             Diagnosis     = Diagnosis,
             VetEmployeeId = CurrentUserSession.CurrentUser?.Id ?? 0,
-            Medicines     = Selected.ToList(),
+            Medicines     = MedicineItems.Where(i => i.IsSelected).Select(i => i.Medicine).ToList(),
         };
 
         if (_visits.OpenVisit(visit, out var error))
@@ -76,7 +90,7 @@ public partial class OpenVisitViewModel : ViewModelBase
             SuccessMsg = $"Visit saved. Total: ₪{visit.TotalCost:F2}";
             Reason = Diagnosis = string.Empty;
             SelectedAnimal = null;
-            Selected.Clear();
+            foreach (var item in MedicineItems) item.IsSelected = false;
             TotalCost = 100m;
         }
         else

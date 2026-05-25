@@ -8,15 +8,18 @@ public class VisitService : IVisitService
 {
     private const decimal BaseVisitPrice = 100m;
 
-    private readonly IVisitRepository _visits;
-    private readonly IAnimalRepository _animals;
+    private readonly IVisitRepository    _visits;
+    private readonly IAnimalRepository   _animals;
+    private readonly IMedicineRepository _medicines;
 
     public VisitService(
-        IVisitRepository visits,
-        IAnimalRepository animals)
+        IVisitRepository    visits,
+        IAnimalRepository   animals,
+        IMedicineRepository medicines)
     {
-        _visits = visits;
-        _animals = animals;
+        _visits    = visits;
+        _animals   = animals;
+        _medicines = medicines;
     }
 
     /// <summary>
@@ -62,6 +65,18 @@ public class VisitService : IVisitService
         try
         {
             _visits.Add(visit);
+
+            // Decrement stock for each medicine used
+            foreach (var med in visit.Medicines)
+            {
+                var current = _medicines.GetById(med.Id);
+                if (current is not null && current.Quantity > 0)
+                {
+                    current.Quantity--;
+                    _medicines.Update(current);
+                }
+            }
+
             error = string.Empty;
             return true;
         }

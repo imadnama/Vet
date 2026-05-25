@@ -27,7 +27,7 @@ public class App : Application
         var authService      = new AuthService(employeeRepo);
         var customerService  = new CustomerService(customerRepo, animalRepo);
         var animalService    = new AnimalService(animalRepo, customerRepo);
-        var visitService     = new VisitService(visitRepo, animalRepo);
+        var visitService     = new VisitService(visitRepo, animalRepo, medicineRepo);
         var medicineService  = new MedicineService(medicineRepo);
 
         var mainVm = new MainViewModel(
