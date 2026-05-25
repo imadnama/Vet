@@ -66,7 +66,7 @@ public partial class MainViewModel : ViewModelBase
 
     [RelayCommand]
     public void NavigateToCustomerSearch()
-        => CurrentPage = new CustomerSearchViewModel(_customers, _animals);
+        => CurrentPage = new CustomerSearchViewModel(_customers, _animals, _customerRepo);
 
     [RelayCommand]
     public void NavigateToAddAnimal()

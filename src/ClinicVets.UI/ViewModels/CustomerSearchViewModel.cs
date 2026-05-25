@@ -8,47 +8,59 @@ namespace ClinicVets.UI.ViewModels;
 
 public partial class CustomerSearchViewModel : ViewModelBase
 {
-    private readonly ICustomerService _customers;
-    private readonly IAnimalService   _animals;
+    private readonly ICustomerService    _customers;
+    private readonly IAnimalService      _animals;
+    private readonly ICustomerRepository _customerRepo;
+    private readonly List<Customer>      _allCustomers;
 
-    [ObservableProperty] private string   _searchQuery   = string.Empty;
-    [ObservableProperty] private bool     _searchByPhone = false;
-    [ObservableProperty] private string   _errorMessage  = string.Empty;
-    [ObservableProperty] private Customer? _foundCustomer;
-    [ObservableProperty] private ObservableCollection<Animal> _customerAnimals = new();
+    [ObservableProperty] private string    _searchQuery      = string.Empty;
+    [ObservableProperty] private bool      _searchByPhone    = false;
+    [ObservableProperty] private string    _errorMessage     = string.Empty;
+    [ObservableProperty] private Customer? _selectedCustomer;
+    [ObservableProperty] private ObservableCollection<Animal> _customerAnimals = [];
 
-    public CustomerSearchViewModel(ICustomerService customers, IAnimalService animals)
+    public ObservableCollection<Customer> Results { get; } = [];
+
+    public CustomerSearchViewModel(ICustomerService customers, IAnimalService animals, ICustomerRepository customerRepo)
     {
-        _customers = customers;
-        _animals   = animals;
+        _customers    = customers;
+        _animals      = animals;
+        _customerRepo = customerRepo;
+        _allCustomers = [.. customerRepo.GetAll().OrderBy(c => c.FullName)];
+        foreach (var c in _allCustomers) Results.Add(c);
     }
 
     [RelayCommand]
     private void Search()
     {
-        ErrorMessage  = string.Empty;
-        FoundCustomer = null;
-        CustomerAnimals.Clear();
+        ErrorMessage     = string.Empty;
+        SelectedCustomer = null;
+        Results.Clear();
 
         if (string.IsNullOrWhiteSpace(SearchQuery))
         {
-            ErrorMessage = "Enter a National ID or phone number to search.";
+            foreach (var c in _allCustomers) Results.Add(c);
             return;
         }
 
         var q = SearchQuery.Trim();
-        var result = SearchByPhone
-            ? _customers.SearchByPhone(q)
-            : _customers.SearchByNationalId(q);
+        var filtered = SearchByPhone
+            ? _allCustomers.Where(c => c.Phone.Contains(q, StringComparison.OrdinalIgnoreCase))
+            : _allCustomers.Where(c => c.NationalId.Contains(q) ||
+                                       c.FullName.Contains(q, StringComparison.OrdinalIgnoreCase));
 
-        if (result is null)
-        {
-            ErrorMessage = "No customer found.";
-            return;
-        }
+        foreach (var c in filtered)
+            Results.Add(c);
 
-        FoundCustomer = result;
-        foreach (var a in _customers.GetCustomerAnimals(result.Id))
+        if (Results.Count == 0)
+            ErrorMessage = "No customers found.";
+    }
+
+    partial void OnSelectedCustomerChanged(Customer? value)
+    {
+        CustomerAnimals.Clear();
+        if (value is null) return;
+        foreach (var a in _customers.GetCustomerAnimals(value.Id))
             CustomerAnimals.Add(a);
     }
 }

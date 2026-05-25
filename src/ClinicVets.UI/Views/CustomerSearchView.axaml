@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ClinicVets.UI.ViewModels"
              x:Class="ClinicVets.UI.Views.CustomerSearchView"
@@ -9,14 +9,14 @@
 
       <StackPanel Spacing="4">
         <TextBlock Text="Search Customer" Classes="pageTitle" />
-        <TextBlock Text="Look up a customer by National ID or phone number." Classes="pageSubtitle" />
+        <TextBlock Text="Browse all customers or search by name, National ID, or phone." Classes="pageSubtitle" />
       </StackPanel>
 
-      <!-- Search bar card -->
+      <!-- Search bar -->
       <Border Classes="card">
         <StackPanel Spacing="12">
           <StackPanel Orientation="Horizontal" Spacing="16">
-            <RadioButton Content="By National ID"
+            <RadioButton Content="By National ID / Name"
                          IsChecked="{Binding SearchByPhone, Converter={x:Static BoolConverters.Not}}"
                          Foreground="{StaticResource TextPrimaryBrush}" />
             <RadioButton Content="By Phone"
@@ -26,7 +26,7 @@
           <Grid ColumnDefinitions="*,10,Auto">
             <TextBox Grid.Column="0"
                      Text="{Binding SearchQuery}"
-                     PlaceholderText="Enter National ID or phone..."
+                     PlaceholderText="Search..."
                      Classes="field" />
             <Button Grid.Column="2"
                     Command="{Binding SearchCommand}"
@@ -38,61 +38,109 @@
         </StackPanel>
       </Border>
 
-      <!-- Result -->
-      <Border Classes="card"
-              IsVisible="{Binding FoundCustomer, Converter={x:Static ObjectConverters.IsNotNull}}">
-        <StackPanel Spacing="16">
+      <!-- List + Detail -->
+      <Grid ColumnDefinitions="*,16,*">
 
-          <!-- Customer info -->
-          <Grid ColumnDefinitions="*,*,*,*" Margin="0,0,0,8">
-            <StackPanel Grid.Column="0" Spacing="2">
-              <TextBlock Text="NAME" Classes="metaLabel" />
-              <TextBlock Text="{Binding FoundCustomer.FullName}" Classes="metaValue" />
-            </StackPanel>
-            <StackPanel Grid.Column="1" Spacing="2">
-              <TextBlock Text="NATIONAL ID" Classes="metaLabel" />
-              <TextBlock Text="{Binding FoundCustomer.NationalId}" Classes="metaValue" />
-            </StackPanel>
-            <StackPanel Grid.Column="2" Spacing="2">
-              <TextBlock Text="PHONE" Classes="metaLabel" />
-              <TextBlock Text="{Binding FoundCustomer.Phone}" Classes="metaValue" />
-            </StackPanel>
-            <StackPanel Grid.Column="3" Spacing="2">
-              <TextBlock Text="EMAIL" Classes="metaLabel" />
-              <TextBlock Text="{Binding FoundCustomer.Email}" Classes="metaValue" TextWrapping="Wrap" />
-            </StackPanel>
-          </Grid>
-
-          <Border Height="1" Background="{StaticResource BorderBrush}" />
-
-          <!-- Animals -->
-          <StackPanel Spacing="8">
-            <TextBlock Text="Animals" FontSize="13" FontWeight="SemiBold"
-                       Foreground="{StaticResource TextSecondaryBrush}" />
-            <TextBlock Text="No animals registered."
-                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
-                       IsVisible="{Binding CustomerAnimals.Count, Converter={x:Static ObjectConverters.IsNull}}" />
-            <ItemsControl ItemsSource="{Binding CustomerAnimals}">
-              <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                  <Border Background="#0D1117"
-                          BorderBrush="{StaticResource BorderBrush}"
-                          BorderThickness="1" CornerRadius="6"
-                          Padding="12,8" Margin="0,0,0,4">
-                    <StackPanel Orientation="Horizontal" Spacing="20">
-                      <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+        <!-- Customer list -->
+        <Border Grid.Column="0" Classes="card" Padding="0">
+          <DockPanel>
+            <Border DockPanel.Dock="Top"
+                    Padding="16,12" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="Customers" FontSize="13" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           VerticalAlignment="Center" />
+                <Border Background="{StaticResource AccentBrush}" CornerRadius="10" Padding="8,2">
+                  <TextBlock Text="{Binding Results.Count}"
+                             FontSize="11" FontWeight="Bold" Foreground="White" />
+                </Border>
+              </StackPanel>
+            </Border>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="480">
+              <ListBox ItemsSource="{Binding Results}"
+                       SelectedItem="{Binding SelectedCustomer}"
+                       Background="Transparent"
+                       BorderThickness="0">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <StackPanel Margin="14,10" Spacing="2">
+                      <TextBlock Text="{Binding FullName}"
+                                 FontWeight="SemiBold" FontSize="14"
                                  Foreground="{StaticResource TextPrimaryBrush}" />
-                      <TextBlock Text="{Binding Type}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" />
-                      <TextBlock Text="{Binding ChipNumber}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" />
+                      <StackPanel Orientation="Horizontal" Spacing="12">
+                        <TextBlock Text="{Binding NationalId}"
+                                   FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <TextBlock Text="{Binding Phone}"
+                                   FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" />
+                      </StackPanel>
                     </StackPanel>
-                  </Border>
-                </DataTemplate>
-              </ItemsControl.ItemTemplate>
-            </ItemsControl>
-          </StackPanel>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </ScrollViewer>
+          </DockPanel>
+        </Border>
 
-        </StackPanel>
-      </Border>
+        <!-- Detail panel -->
+        <Border Grid.Column="2" Classes="card"
+                IsVisible="{Binding SelectedCustomer, Converter={x:Static ObjectConverters.IsNotNull}}">
+          <StackPanel Spacing="16">
+
+            <!-- Customer fields -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+              <StackPanel Grid.Column="0" Grid.Row="0" Spacing="2" Margin="0,0,0,12">
+                <TextBlock Text="NAME" Classes="metaLabel" />
+                <TextBlock Text="{Binding SelectedCustomer.FullName}" Classes="metaValue" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Grid.Row="0" Spacing="2" Margin="0,0,0,12">
+                <TextBlock Text="NATIONAL ID" Classes="metaLabel" />
+                <TextBlock Text="{Binding SelectedCustomer.NationalId}" Classes="metaValue" />
+              </StackPanel>
+              <StackPanel Grid.Column="0" Grid.Row="1" Spacing="2">
+                <TextBlock Text="PHONE" Classes="metaLabel" />
+                <TextBlock Text="{Binding SelectedCustomer.Phone}" Classes="metaValue" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Grid.Row="1" Spacing="2">
+                <TextBlock Text="EMAIL" Classes="metaLabel" />
+                <TextBlock Text="{Binding SelectedCustomer.Email}" Classes="metaValue"
+                           TextWrapping="Wrap" />
+              </StackPanel>
+            </Grid>
+
+            <Border Height="1" Background="{StaticResource BorderBrush}" />
+
+            <!-- Animals -->
+            <StackPanel Spacing="8">
+              <TextBlock Text="Registered Animals" FontSize="13" FontWeight="SemiBold"
+                         Foreground="{StaticResource TextSecondaryBrush}" />
+              <TextBlock Text="No animals registered for this customer."
+                         FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                         IsVisible="{Binding CustomerAnimals.Count, Converter={x:Static ObjectConverters.IsNull}}" />
+              <ItemsControl ItemsSource="{Binding CustomerAnimals}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Background="#0D1117"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1" CornerRadius="6"
+                            Padding="12,8" Margin="0,0,0,4">
+                      <StackPanel Orientation="Horizontal" Spacing="20">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                        <TextBlock Text="{Binding Type}"
+                                   Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" />
+                        <TextBlock Text="{Binding ChipNumber}"
+                                   Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" />
+                      </StackPanel>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+
+          </StackPanel>
+        </Border>
+
+      </Grid>
 
     </StackPanel>
   </ScrollViewer>
@@ -148,6 +196,9 @@
     </Style>
     <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
       <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="#22FFFFFF" />
     </Style>
   </UserControl.Styles>
 </UserControl>
