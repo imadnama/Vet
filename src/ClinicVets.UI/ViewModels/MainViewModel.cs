@@ -46,7 +46,9 @@ public partial class MainViewModel : ViewModelBase
 
     [RelayCommand]
     public void NavigateToDashboard()
-        => CurrentPage = new DashboardViewModel(CurrentUserSession.CurrentUser!);
+        => CurrentPage = new DashboardViewModel(
+                CurrentUserSession.CurrentUser!,
+                _visits, _animals, _medicines, _customerRepo);
 
     private void NavigateToRegisterFromLogin()
         => CurrentPage = new RegisterEmployeeViewModel(_auth, GoBackToLogin);

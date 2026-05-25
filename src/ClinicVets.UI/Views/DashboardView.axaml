@@ -4,73 +4,316 @@
              x:Class="ClinicVets.UI.Views.DashboardView"
              x:DataType="vm:DashboardViewModel">
 
-  <ScrollViewer>
-    <StackPanel Margin="36,32,36,32" Spacing="32">
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="36,32,36,32" Spacing="24">
 
-      <!-- Greeting -->
-      <StackPanel Spacing="6">
-        <TextBlock Text="{Binding Greeting}"
-                   FontSize="26" FontWeight="Bold"
-                   Foreground="{StaticResource TextPrimaryBrush}" />
-        <StackPanel Orientation="Horizontal" Spacing="16">
-          <Border Background="{StaticResource AccentBrush}"
-                  CornerRadius="4" Padding="8,3">
-            <TextBlock Text="{Binding Role}"
-                       FontSize="11" FontWeight="SemiBold"
-                       Foreground="White" />
-          </Border>
-          <TextBlock Text="{Binding DateStamp}"
-                     FontSize="13"
-                     Foreground="{StaticResource TextSecondaryBrush}"
-                     VerticalAlignment="Center" />
+      <!-- ── Header ─────────────────────────────────────────────────────── -->
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" Spacing="6">
+          <TextBlock Text="{Binding Greeting}"
+                     FontSize="26" FontWeight="Bold"
+                     Foreground="{StaticResource TextPrimaryBrush}" />
+          <StackPanel Orientation="Horizontal" Spacing="12">
+            <Border Background="{StaticResource AccentBrush}" CornerRadius="4" Padding="8,3">
+              <TextBlock Text="{Binding Role}"
+                         FontSize="11" FontWeight="SemiBold" Foreground="White" />
+            </Border>
+            <TextBlock Text="{Binding DateStamp}"
+                       FontSize="13" Foreground="{StaticResource TextSecondaryBrush}"
+                       VerticalAlignment="Center" />
+          </StackPanel>
         </StackPanel>
-      </StackPanel>
+        <Button Grid.Column="1" Command="{Binding RefreshCommand}"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                CornerRadius="6" Padding="14,7"
+                Foreground="{StaticResource TextSecondaryBrush}"
+                FontSize="13" Cursor="Hand">
+          ↺  Refresh
+        </Button>
+      </Grid>
 
-      <!-- Info cards row -->
-      <WrapPanel Orientation="Horizontal">
-        <Border Classes="infoCard" Margin="0,0,16,16">
-          <StackPanel Spacing="6">
-            <TextBlock Text="🐾" FontSize="28" />
-            <TextBlock Text="Animal Visits" FontSize="13" FontWeight="SemiBold"
-                       Foreground="{StaticResource TextSecondaryBrush}" />
-            <TextBlock Text="Search animal visit history from the sidebar."
-                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
-                       TextWrapping="Wrap" />
+      <!-- ── 4 Stat Cards ───────────────────────────────────────────────── -->
+      <Grid ColumnDefinitions="*,12,*,12,*,12,*">
+
+        <Border Grid.Column="0" Classes="statCard">
+          <StackPanel Spacing="0">
+            <Border Height="3" CornerRadius="2,2,0,0"
+                    Background="{StaticResource AccentBrush}"
+                    Margin="-20,-18,-20,14" />
+            <TextBlock Text="VISITS TODAY" Classes="statLabel" />
+            <TextBlock Text="{Binding TodayVisits}" Classes="statValue"
+                       Foreground="{StaticResource AccentBrush}" />
+            <TextBlock Text="clinical visits" Classes="statSub" />
           </StackPanel>
         </Border>
-        <Border Classes="infoCard" Margin="0,0,16,16">
-          <StackPanel Spacing="6">
-            <TextBlock Text="💊" FontSize="28" />
-            <TextBlock Text="Medicine Inventory" FontSize="13" FontWeight="SemiBold"
-                       Foreground="{StaticResource TextSecondaryBrush}" />
-            <TextBlock Text="Manage stock and pricing from the sidebar."
-                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
-                       TextWrapping="Wrap" />
+
+        <Border Grid.Column="2" Classes="statCard">
+          <StackPanel Spacing="0">
+            <Border Height="3" CornerRadius="2,2,0,0" Background="#818CF8"
+                    Margin="-20,-18,-20,14" />
+            <TextBlock Text="VISITS THIS MONTH" Classes="statLabel" />
+            <TextBlock Text="{Binding MonthVisits}" Classes="statValue"
+                       Foreground="#818CF8" />
+            <TextBlock Text="this month" Classes="statSub" />
           </StackPanel>
         </Border>
-        <Border Classes="infoCard" Margin="0,0,16,16">
-          <StackPanel Spacing="6">
-            <TextBlock Text="👥" FontSize="28" />
-            <TextBlock Text="Customers &amp; Animals" FontSize="13" FontWeight="SemiBold"
-                       Foreground="{StaticResource TextSecondaryBrush}" />
-            <TextBlock Text="Register and search owners and their animals."
-                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
-                       TextWrapping="Wrap" />
+
+        <Border Grid.Column="4" Classes="statCard">
+          <StackPanel Spacing="0">
+            <Border Height="3" CornerRadius="2,2,0,0"
+                    Background="{StaticResource SuccessBrush}"
+                    Margin="-20,-18,-20,14" />
+            <TextBlock Text="EARNINGS TODAY" Classes="statLabel" />
+            <TextBlock Text="{Binding TodayEarnings}" Classes="statValue"
+                       Foreground="{StaticResource SuccessBrush}" />
+            <TextBlock Text="today's revenue" Classes="statSub" />
           </StackPanel>
         </Border>
-      </WrapPanel>
+
+        <Border Grid.Column="6" Classes="statCard">
+          <StackPanel Spacing="0">
+            <Border Height="3" CornerRadius="2,2,0,0" Background="#4ADE80"
+                    Margin="-20,-18,-20,14" />
+            <TextBlock Text="EARNINGS THIS MONTH" Classes="statLabel" />
+            <TextBlock Text="{Binding MonthEarnings}" Classes="statValue"
+                       Foreground="#4ADE80" />
+            <TextBlock Text="monthly revenue" Classes="statSub" />
+          </StackPanel>
+        </Border>
+
+      </Grid>
+
+      <!-- ── Two-column section ─────────────────────────────────────────── -->
+      <Grid ColumnDefinitions="*,20,300">
+
+        <!-- TODAY'S VISITS -->
+        <Border Grid.Column="0" Classes="card">
+          <StackPanel Spacing="14">
+
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <TextBlock Text="Today's Visits"
+                         FontSize="15" FontWeight="SemiBold"
+                         Foreground="{StaticResource TextPrimaryBrush}" />
+              <Border Background="{StaticResource AccentBrush}"
+                      CornerRadius="10" Padding="9,2">
+                <TextBlock Text="{Binding TodayVisits}"
+                           FontSize="11" FontWeight="Bold" Foreground="White" />
+              </Border>
+            </StackPanel>
+
+            <Border Background="#0D1117" CornerRadius="8" Padding="16,14"
+                    IsVisible="{Binding NoTodayVisits}">
+              <TextBlock Text="No visits recorded yet today."
+                         FontSize="13" Foreground="{StaticResource TextSecondaryBrush}"
+                         HorizontalAlignment="Center" />
+            </Border>
+
+            <ScrollViewer MaxHeight="380" VerticalScrollBarVisibility="Auto"
+                          IsVisible="{Binding !NoTodayVisits}">
+              <ItemsControl ItemsSource="{Binding TodayRows}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="vm:TodayVisitRow">
+                    <Border BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0,0,0,1" Padding="0,10">
+                      <Grid ColumnDefinitions="52,*,Auto">
+                        <TextBlock Grid.Column="0" Text="{Binding Time}"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                          <TextBlock Text="{Binding AnimalName}"
+                                     FontSize="13" FontWeight="SemiBold"
+                                     Foreground="{StaticResource TextPrimaryBrush}" />
+                          <TextBlock Text="{Binding Reason}"
+                                     FontSize="11"
+                                     Foreground="{StaticResource TextSecondaryBrush}" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="2" Text="{Binding Cost}"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource SuccessBrush}"
+                                   VerticalAlignment="Center" />
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </ScrollViewer>
+
+          </StackPanel>
+        </Border>
+
+        <!-- RIGHT PANEL -->
+        <StackPanel Grid.Column="2" Spacing="14">
+
+          <!-- Animals + Customers mini cards -->
+          <Grid ColumnDefinitions="*,10,*">
+            <Border Grid.Column="0" Classes="miniCard">
+              <StackPanel Spacing="4" HorizontalAlignment="Center">
+                <TextBlock Text="🐾" FontSize="22" HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding TotalAnimals}"
+                           FontSize="24" FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="Animals" FontSize="11"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center" />
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Classes="miniCard">
+              <StackPanel Spacing="4" HorizontalAlignment="Center">
+                <TextBlock Text="👥" FontSize="22" HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding TotalCustomers}"
+                           FontSize="24" FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="Customers" FontSize="11"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center" />
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <!-- Low Stock Medicines -->
+          <Border Classes="alertCard">
+            <StackPanel Spacing="12">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="💊" FontSize="14" VerticalAlignment="Center" />
+                <TextBlock Text="Low Stock" FontSize="14" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+
+              <TextBlock Text="All medicines are well stocked."
+                         IsVisible="{Binding NoLowStock}"
+                         FontSize="12"
+                         Foreground="{StaticResource TextSecondaryBrush}" />
+
+              <ItemsControl ItemsSource="{Binding LowStockItems}"
+                            IsVisible="{Binding !NoLowStock}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="vm:LowStockItem">
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,4">
+                      <TextBlock Grid.Column="0" Text="{Binding Name}"
+                                 FontSize="12"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 VerticalAlignment="Center" />
+                      <Border Grid.Column="1" CornerRadius="4" Padding="7,2"
+                              Background="#3D2000">
+                        <TextBlock FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{StaticResource WarningBrush}">
+                          <Run Text="{Binding Quantity}" /><Run Text=" left" />
+                        </TextBlock>
+                      </Border>
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+
+          <!-- Vaccination Due -->
+          <Border Classes="alertCard">
+            <StackPanel Spacing="12">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="⚠" FontSize="13"
+                           Foreground="{StaticResource WarningBrush}"
+                           VerticalAlignment="Center" />
+                <TextBlock Text="Vaccination Due" FontSize="14" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+
+              <TextBlock Text="No animals are overdue."
+                         IsVisible="{Binding NoVaccineAlerts}"
+                         FontSize="12"
+                         Foreground="{StaticResource TextSecondaryBrush}" />
+
+              <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto"
+                            IsVisible="{Binding !NoVaccineAlerts}">
+                <ItemsControl ItemsSource="{Binding VaccineAlerts}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:VaccinationAlertItem">
+                      <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4">
+                        <Border Background="#291F00" CornerRadius="3" Padding="5,2">
+                          <TextBlock Text="{Binding AnimalType}"
+                                     FontSize="10" FontWeight="SemiBold"
+                                     Foreground="{StaticResource WarningBrush}" />
+                        </Border>
+                        <TextBlock Text="{Binding AnimalName}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   VerticalAlignment="Center" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </ScrollViewer>
+
+            </StackPanel>
+          </Border>
+
+        </StackPanel>
+
+      </Grid>
 
     </StackPanel>
   </ScrollViewer>
 
   <UserControl.Styles>
-    <Style Selector="Border.infoCard">
-      <Setter Property="Background" Value="{StaticResource CardBgBrush}" />
-      <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+
+    <Style Selector="Border.statCard">
+      <Setter Property="Background"      Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush"     Value="{StaticResource BorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="CornerRadius" Value="12" />
-      <Setter Property="Padding" Value="20,18" />
-      <Setter Property="Width" Value="200" />
+      <Setter Property="CornerRadius"    Value="10" />
+      <Setter Property="Padding"         Value="20,18" />
+      <Setter Property="ClipToBounds"    Value="True" />
     </Style>
+
+    <Style Selector="Border.card">
+      <Setter Property="Background"      Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush"     Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius"    Value="10" />
+      <Setter Property="Padding"         Value="20,18" />
+    </Style>
+
+    <Style Selector="Border.miniCard">
+      <Setter Property="Background"      Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush"     Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius"    Value="10" />
+      <Setter Property="Padding"         Value="12,16" />
+    </Style>
+
+    <Style Selector="Border.alertCard">
+      <Setter Property="Background"      Value="{StaticResource CardBgBrush}" />
+      <Setter Property="BorderBrush"     Value="{StaticResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius"    Value="10" />
+      <Setter Property="Padding"         Value="16,14" />
+    </Style>
+
+    <Style Selector="TextBlock.statLabel">
+      <Setter Property="FontSize"      Value="10" />
+      <Setter Property="FontWeight"    Value="SemiBold" />
+      <Setter Property="LetterSpacing" Value="1.5" />
+      <Setter Property="Foreground"    Value="{StaticResource TextSecondaryBrush}" />
+      <Setter Property="Margin"        Value="0,0,0,8" />
+    </Style>
+
+    <Style Selector="TextBlock.statValue">
+      <Setter Property="FontSize"   Value="34" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Margin"     Value="0,0,0,4" />
+    </Style>
+
+    <Style Selector="TextBlock.statSub">
+      <Setter Property="FontSize"   Value="11" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+
   </UserControl.Styles>
 </UserControl>
