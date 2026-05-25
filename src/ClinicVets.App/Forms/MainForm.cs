@@ -143,11 +143,13 @@ public class MainForm : Form
             ForeColor = Color.FromArgb(123, 31, 162),
         };
 
-        var btnOpenVisit = MakeNavButton("Open Visit",          Color.FromArgb(123, 31, 162), new Point(16,  30));
-        var btnMedicine  = MakeNavButton("Medicine Inventory",  Color.FromArgb(123, 31, 162), new Point(186, 30));
-        btnOpenVisit.Click += (_, _) => OpenVisit();
-        btnMedicine.Click  += (_, _) => OpenMedicineInventory();
-        _gbVisits.Controls.AddRange(new Control[] { btnOpenVisit, btnMedicine });
+        var btnOpenVisit    = MakeNavButton("Open Visit",         Color.FromArgb(123, 31, 162), new Point(16,  30));
+        var btnMedicine     = MakeNavButton("Medicine Inventory", Color.FromArgb(123, 31, 162), new Point(186, 30));
+        var btnVisitHistory = MakeNavButton("Visit History",      Color.FromArgb(123, 31, 162), new Point(356, 30));
+        btnOpenVisit.Click    += (_, _) => OpenVisit();
+        btnMedicine.Click     += (_, _) => OpenMedicineInventory();
+        btnVisitHistory.Click += (_, _) => OpenVisitHistory();
+        _gbVisits.Controls.AddRange(new Control[] { btnOpenVisit, btnMedicine, btnVisitHistory });
 
         // ── Status bar ───────────────────────────────────────────────────────
         var pnlStatus = new Panel { Dock = DockStyle.Bottom, Height = 28, BackColor = Color.FromArgb(224, 224, 224) };
@@ -232,4 +234,7 @@ private void OpenVisit()
 
     private void OpenMedicineInventory()
         => new MedicineInventoryForm(_medicineService).ShowDialog(this);
+
+    private void OpenVisitHistory()
+        => new VisitHistoryForm(_visitService, _animalService).ShowDialog(this);
 }
