@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ClinicVets.UI.ViewModels"
              xmlns:m="using:ClinicVets.Core.Models"
@@ -19,11 +19,11 @@
           <Grid ColumnDefinitions="*,10,*,10,Auto">
             <StackPanel Grid.Column="0" Spacing="4">
               <TextBlock Text="Animal Name" Classes="fieldLabel" />
-              <TextBox Text="{Binding NameQuery}" Watermark="Search by name..." Classes="field" />
+              <TextBox Text="{Binding NameQuery}" PlaceholderText="Search by name..." Classes="field" />
             </StackPanel>
             <StackPanel Grid.Column="2" Spacing="4">
               <TextBlock Text="Chip Number" Classes="fieldLabel" />
-              <TextBox Text="{Binding ChipQuery}" Watermark="Exact chip..." Classes="field" />
+              <TextBox Text="{Binding ChipQuery}" PlaceholderText="Exact chip..." Classes="field" />
             </StackPanel>
             <Button Grid.Column="4" Command="{Binding SearchCommand}"
                     Classes="primary" Padding="20,0"

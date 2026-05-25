@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ClinicVets.UI.ViewModels"
              xmlns:m="using:ClinicVets.Core.Models"
@@ -62,13 +62,13 @@
           <!-- Reason -->
           <StackPanel Spacing="4">
             <TextBlock Text="Reason for Visit" Classes="fieldLabel" />
-            <TextBox Text="{Binding Reason}" Watermark="Describe the reason..." Classes="field" />
+            <TextBox Text="{Binding Reason}" PlaceholderText="Describe the reason..." Classes="field" />
           </StackPanel>
 
           <!-- Diagnosis -->
           <StackPanel Spacing="4">
             <TextBlock Text="Diagnosis (optional)" Classes="fieldLabel" />
-            <TextBox Text="{Binding Diagnosis}" Watermark="Diagnosis notes..."
+            <TextBox Text="{Binding Diagnosis}" PlaceholderText="Diagnosis notes..."
                      Classes="field" Height="70" AcceptsReturn="True"
                      TextWrapping="Wrap" />
           </StackPanel>

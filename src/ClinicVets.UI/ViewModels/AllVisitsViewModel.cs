@@ -41,16 +41,16 @@ public partial class AllVisitsViewModel : ViewModelBase
     [RelayCommand]
     private void Refresh() => Load();
 
-    partial void OnSelectedChanged(VisitRow? row)
+    partial void OnSelectedChanged(VisitRow? value)
     {
-        if (row is null) { DetailText = string.Empty; return; }
-        var v    = row.Visit;
+        if (value is null) { DetailText = string.Empty; return; }
+        var v    = value.Visit;
         var meds = v.Medicines.Count > 0
             ? string.Join("\n", v.Medicines.Select(m => $"  • {m.Name}  ₪{m.Price:F2}"))
             : "  (none)";
         DetailText =
             $"Visit #{v.Id}\n" +
-            $"Animal   : {row.AnimalName}\n" +
+            $"Animal   : {value.AnimalName}\n" +
             $"Date     : {v.VisitDateTime:dd/MM/yyyy HH:mm}\n" +
             $"Reason   : {v.Reason}\n" +
             $"Diagnosis: {(string.IsNullOrWhiteSpace(v.Diagnosis) ? "(none)" : v.Diagnosis)}\n" +

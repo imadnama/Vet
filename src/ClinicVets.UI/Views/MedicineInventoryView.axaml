@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ClinicVets.UI.ViewModels"
              xmlns:m="using:ClinicVets.Core.Models"
@@ -22,7 +22,7 @@
           <Grid ColumnDefinitions="*,12,140,12,100">
             <StackPanel Grid.Column="0" Spacing="4">
               <TextBlock Text="Name" Classes="fieldLabel" />
-              <TextBox Text="{Binding Name}" Watermark="Medicine name" Classes="field" />
+              <TextBox Text="{Binding Name}" PlaceholderText="Medicine name" Classes="field" />
               <TextBlock Text="{Binding ErrName}" Classes="errLabel"
                          IsVisible="{Binding ErrName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
             </StackPanel>

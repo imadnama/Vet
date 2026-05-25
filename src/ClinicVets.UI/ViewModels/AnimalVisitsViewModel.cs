@@ -48,19 +48,19 @@ public partial class AnimalVisitsViewModel : ViewModelBase
         if (Visits.Count == 0) StatusMsg += "  — No visits recorded.";
     }
 
-    partial void OnSelectedVisitChanged(Visit? v)
+    partial void OnSelectedVisitChanged(Visit? value)
     {
-        if (v is null) { DetailText = string.Empty; return; }
-        var meds = v.Medicines.Count > 0
-            ? string.Join("\n", v.Medicines.Select(m => $"  • {m.Name}  ₪{m.Price:F2}"))
+        if (value is null) { DetailText = string.Empty; return; }
+        var meds = value.Medicines.Count > 0
+            ? string.Join("\n", value.Medicines.Select(m => $"  • {m.Name}  ₪{m.Price:F2}"))
             : "  (none)";
         DetailText =
-            $"Visit #{v.Id}\n" +
-            $"Date     : {v.VisitDateTime:dd/MM/yyyy HH:mm}\n" +
-            $"Reason   : {v.Reason}\n" +
-            $"Diagnosis: {(string.IsNullOrWhiteSpace(v.Diagnosis) ? "(none)" : v.Diagnosis)}\n" +
-            $"Vet ID   : {v.VetEmployeeId}\n" +
+            $"Visit #{value.Id}\n" +
+            $"Date     : {value.VisitDateTime:dd/MM/yyyy HH:mm}\n" +
+            $"Reason   : {value.Reason}\n" +
+            $"Diagnosis: {(string.IsNullOrWhiteSpace(value.Diagnosis) ? "(none)" : value.Diagnosis)}\n" +
+            $"Vet ID   : {value.VetEmployeeId}\n" +
             $"Medicines:\n{meds}\n" +
-            $"Cost     : ₪{v.TotalCost:F2}";
+            $"Cost     : ₪{value.TotalCost:F2}";
     }
 }

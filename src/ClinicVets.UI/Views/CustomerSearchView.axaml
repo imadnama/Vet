@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ClinicVets.UI.ViewModels"
              x:Class="ClinicVets.UI.Views.CustomerSearchView"
@@ -26,7 +26,7 @@
           <Grid ColumnDefinitions="*,10,Auto">
             <TextBox Grid.Column="0"
                      Text="{Binding SearchQuery}"
-                     Watermark="Enter National ID or phone..."
+                     PlaceholderText="Enter National ID or phone..."
                      Classes="field" />
             <Button Grid.Column="2"
                     Command="{Binding SearchCommand}"

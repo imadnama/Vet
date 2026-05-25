@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ClinicVets.UI.ViewModels"
              x:Class="ClinicVets.UI.Views.CustomerRegistrationView"
@@ -18,28 +18,28 @@
 
             <StackPanel Spacing="4">
               <TextBlock Text="Full Name" Classes="fieldLabel" />
-              <TextBox Text="{Binding FullName}" Watermark="Owner's full name" Classes="field" />
+              <TextBox Text="{Binding FullName}" PlaceholderText="Owner's full name" Classes="field" />
               <TextBlock Text="{Binding ErrFullName}" Classes="errLabel"
                          IsVisible="{Binding ErrFullName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
             </StackPanel>
 
             <StackPanel Spacing="4">
               <TextBlock Text="National ID" Classes="fieldLabel" />
-              <TextBox Text="{Binding NationalId}" Watermark="9-digit ID number" Classes="field" />
+              <TextBox Text="{Binding NationalId}" PlaceholderText="9-digit ID number" Classes="field" />
               <TextBlock Text="{Binding ErrNationalId}" Classes="errLabel"
                          IsVisible="{Binding ErrNationalId, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
             </StackPanel>
 
             <StackPanel Spacing="4">
               <TextBlock Text="Phone" Classes="fieldLabel" />
-              <TextBox Text="{Binding Phone}" Watermark="e.g. 050-1234567" Classes="field" />
+              <TextBox Text="{Binding Phone}" PlaceholderText="e.g. 050-1234567" Classes="field" />
               <TextBlock Text="{Binding ErrPhone}" Classes="errLabel"
                          IsVisible="{Binding ErrPhone, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
             </StackPanel>
 
             <StackPanel Spacing="4">
               <TextBlock Text="Email" Classes="fieldLabel" />
-              <TextBox Text="{Binding Email}" Watermark="email@example.com" Classes="field" />
+              <TextBox Text="{Binding Email}" PlaceholderText="email@example.com" Classes="field" />
               <TextBlock Text="{Binding ErrEmail}" Classes="errLabel"
                          IsVisible="{Binding ErrEmail, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
             </StackPanel>

@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:ClinicVets.UI.ViewModels"
              x:Class="ClinicVets.UI.Views.DashboardView"
@@ -30,7 +30,7 @@
       <WrapPanel Orientation="Horizontal">
         <Border Classes="infoCard" Margin="0,0,16,16">
           <StackPanel Spacing="6">
-            <TextBlock Text="🐾" FontSize="28" />
+            <TextBlock Text="ðŸ¾" FontSize="28" />
             <TextBlock Text="Animal Visits" FontSize="13" FontWeight="SemiBold"
                        Foreground="{StaticResource TextSecondaryBrush}" />
             <TextBlock Text="Search animal visit history from the sidebar."
@@ -40,7 +40,7 @@
         </Border>
         <Border Classes="infoCard" Margin="0,0,16,16">
           <StackPanel Spacing="6">
-            <TextBlock Text="💊" FontSize="28" />
+            <TextBlock Text="ðŸ’Š" FontSize="28" />
             <TextBlock Text="Medicine Inventory" FontSize="13" FontWeight="SemiBold"
                        Foreground="{StaticResource TextSecondaryBrush}" />
             <TextBlock Text="Manage stock and pricing from the sidebar."
@@ -50,7 +50,7 @@
         </Border>
         <Border Classes="infoCard" Margin="0,0,16,16">
           <StackPanel Spacing="6">
-            <TextBlock Text="👥" FontSize="28" />
+            <TextBlock Text="ðŸ‘¥" FontSize="28" />
             <TextBlock Text="Customers &amp; Animals" FontSize="13" FontWeight="SemiBold"
                        Foreground="{StaticResource TextSecondaryBrush}" />
             <TextBlock Text="Register and search owners and their animals."
