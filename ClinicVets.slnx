@@ -8,4 +8,7 @@
     <Project Path="src/ClinicVets.g2/ClinicVets.g2.csproj" />
     <Project Path="src/ClinicVets.g3/ClinicVets.g3.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ClinicVets.Tests/ClinicVets.Tests.csproj" />
+  </Folder>
 </Solution>
