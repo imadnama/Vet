@@ -39,3 +39,6 @@ Desktop.ini
 
 # Publish output
 publish/
+
+# Claude Code local settings
+.claude/
